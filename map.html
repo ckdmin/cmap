@@ -1,0 +1,528 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script> 
+		
+	<title> Chang Map </title>
+	
+	<style>
+	    #centerAddr {display:block;margin-top:2px;font-weight: normal;font-size:13px;position: relative;background:white;}
+	    .bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;font-size:15px;}
+	    .currBtn {
+       				bottom:61%;
+					right:3%;
+					width:34px;
+					height:34px;
+					position: absolute;
+					z-index: 2;
+					background: transparent;
+					border: none; 
+				}
+		.imgInvert	{filter: invert(100%);}
+	    .wrap_roadview {width:100%;height:20%;position:relative}
+	    .wrap_rvText {position:absolute;left:0px;top:0px;z-index:2;width:100%;height:100%;background-color:gray}
+	    #rvMsg {text-align: center; font-weight: normal;font-size:15px;position: relative;color:white}
+	    .wrap_npText {position:absolute;right:0px;top:0px;z-index:2;}
+	    #npMsg {text-align: center; font-weight: normal;font-size:15px;position: relative;color:black;background:white}		
+	</style>
+
+</head>
+
+
+<body>
+	<button class="currBtn" onclick="getLocation()"><img width='30px' height='30px' src='./resources/img/currloc.png'></button>
+
+	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
+
+
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=4f5vsjimoe&submodules=panorama"></script>
+    <script src="https://assets.what3words.com/sdk/v3/what3words.js?key=4MDFOPCO"></script>
+
+	<div id="kmap" style="width:100%;height:40%;z-index:1;">
+		<div id="centerAddr" style="width:400PX;height:65PX;z-index:2;"> </div>
+	</div>
+    <div class="wrap_roadview">
+      	<div id="roadview" style="width:49.9%;height:100%;float:left;"></div> <!-- 로드뷰를 표시할 div 입니다 -->
+        <div class="wrap_rvText" style="width:49.9%;height:100%">
+	      	<div id="rvMsg"></div>
+        </div>
+		<div id="npano" style="width:49.9%;height:100%;float:right"></div>
+        <div class="wrap_npText" style="width:49.9%;height:10%;z-index:2;float:right;">
+	      	<div id="npMsg"></div>
+        </div>
+    </div>
+	<div id="nmap" style="width:100%;height:40%;z-index:1;"></div>
+    
+	<script>
+	
+// kakaomap 지도 생성
+		var kmapContainer = document.getElementById('kmap'), // 지도를 표시할 div 
+		    kmapOption = {
+		        center: new kakao.maps.LatLng(37.7156716401502, 126.73449077483106), // 지도의 중심좌표
+		        level: 4 // 지도의 확대 레벨
+		    }; 
+		var kmap = new kakao.maps.Map(kmapContainer, kmapOption); 
+
+		// 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성 및 추가
+		var kmapTypeControl = new kakao.maps.MapTypeControl();
+		kmap.addControl(kmapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+		
+		// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성 및 추가
+		var kzoomControl = new kakao.maps.ZoomControl();
+		kmap.addControl(kzoomControl, kakao.maps.ControlPosition.RIGHT);
+
+// kakaomap 로드뷰 생성
+		var roadviewContainer = document.getElementById('roadview'); //로드뷰를 표시할 div
+		var roadview = new kakao.maps.Roadview(roadviewContainer); //로드뷰 객체
+		var roadviewClient = new kakao.maps.RoadviewClient(); //좌표로부터 로드뷰 파노ID를 가져올 로드뷰 helper객체
+		var rvText = document.getElementsByClassName('wrap_rvText');
+		var rvMsg = document.getElementById('rvMsg');
+		rvMsg.innerHTML = '로드뷰 확인 불가';
+		var npMsg = document.getElementById('npMsg');
+				
+		showRoadview(kmap.getCenter());
+		
+    // 마커 클러스터러를 생성합니다 
+    var clusterer = new kakao.maps.MarkerClusterer({
+        map: kmap, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
+        minLevel: 10 // 클러스터 할 최소 지도 레벨 
+    });		
+
+// naver 지도 생성
+		var nmapContainer = document.getElementById('nmap'), // 지도를 표시할 div 
+		    nmapOption = {
+		        center: new naver.maps.LatLng(37.7156716401502, 126.73449077483106), // 지도의 중심좌표
+		        zoomControl: true, //줌 컨트롤의 표시 여부
+		        zoomControlOptions: 
+		        	{ //줌 컨트롤의 옵션
+        				position: naver.maps.Position.TOP_RIGHT
+		        	},
+		        zoom: 16, // 지도의 확대 레벨 (kmap 과 동일한 줌레벨 맞춤)
+		        maxZoom: 19
+		    }; 
+		var nmap = new naver.maps.Map(nmapContainer, nmapOption); 
+
+// naver panorama 생성
+
+		var pano = new naver.maps.Panorama(document.getElementById("npano"), {
+			position: nmap.getCenter()
+		});
+
+// 중심 주소 확인		
+		var geocoder = new kakao.maps.services.Geocoder();	// 주소-좌표 변환 객체를 생성합니다
+		searchDetailAddrFromCoords(kmap.getCenter(), displayCenterInfo);	// 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
+
+// 마커 설정
+
+		// 중심 표시 마커 (kakaomap)
+		var imageSrc = './resources/img/plus.png', // 마커이미지의 주소입니다 (일반지도 화면)   
+		    imageSize = new kakao.maps.Size(16, 16), // 마커이미지의 크기입니다
+		    imageOption = {offset: new kakao.maps.Point(8, 8)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+		var imageSrc_w = './resources/img/plus_w.png', // 마커이미지의 주소입니다 (스카이뷰 화면)    
+		    imageSize_w = new kakao.maps.Size(16, 16), // 마커이미지의 크기입니다
+		    imageOption_w = {offset: new kakao.maps.Point(8, 8)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+      
+		// 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+		var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+		var markerImage_w = new kakao.maps.MarkerImage(imageSrc_w, imageSize_w, imageOption_w);
+		var markerPosition = kmap.getCenter(); // 마커가 표시될 위치입니다
+				    
+		// 마커를 생성합니다
+		var cmarker = new kakao.maps.Marker({
+		    position: markerPosition, 
+		    image: markerImage // 마커이미지 설정 
+		});
+
+		// 마커가 지도 위에 표시되도록 설정합니다
+		cmarker.setMap(kmap);  
+
+		// 클릭한 위치 마커
+		var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
+	    infowindow = new kakao.maps.InfoWindow({zindex:1, removable:false}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+
+		// 로드뷰 위치 마커
+		var rmarker = new kakao.maps.Marker({
+		});
+
+		// 중심 표시 마커 (naver)
+		var markerOptions_nmap = {
+		    position: nmap.getCenter(),
+		    map: nmap,
+			icon: {
+					url: './resources/img/plus.png',
+					scaledSize: new naver.maps.Size(16, 16),
+					anchor: new naver.maps.Point(8, 8)
+				}
+		};
+
+		var cmarker_nmap = new naver.maps.Marker(markerOptions_nmap);
+
+		var rmarker_nmap = new naver.maps.Marker({
+//		    position: nmap.getCenter(),
+//		    map: nmap,
+		});
+
+
+
+//		getRoutes();
+
+// Event Listeners
+
+		// 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
+		kakao.maps.event.addListener(kmap, 'click', function(mouseEvent) {
+			what3words.api.convertTo3wa({lat:mouseEvent.latLng.getLat(), lng:mouseEvent.latLng.getLng()}, 'ko')
+				.then(function(response) {
+
+			    searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+			        if (status === kakao.maps.services.Status.OK) {
+			            var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' 
+				            							            + '<a target="_blank" href = "https://map.kakao.com/link/search/' + result[0].road_address.address_name  + '">'
+			            											+ result[0].road_address.address_name + '</a></div>' : '';
+			            detailAddr += '<div>지번 주소 : ' 
+							            + '<a target="_blank" href = "https://map.kakao.com/link/search/' + result[0].address.address_name  + '">'
+			            				+ result[0].address.address_name + '</a></div>';
+
+						detailAddr += '<div>지도 중심 좌표: ' 
+										+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + mouseEvent.latLng.getLat() + "," +mouseEvent.latLng.getLng() + '">'
+										+ mouseEvent.latLng.getLat() + "," +mouseEvent.latLng.getLng() + '</a></div>' ;
+													            				
+			            detailAddr += '<div>W3W : ' 
+										+ '<a target="_blank" href = "https://map.kakao.com/link/search////' + response.words + '">'						
+							            + '///' + response.words + '</a></div>';
+
+			            var content = '<div class="bAddr">' +
+           		     		            '<span class="title">주소정보</span>' + 
+		   		                         detailAddr + 
+        				                '</div>';
+
+			            // 마커를 클릭한 위치에 표시합니다 
+			            marker.setPosition(mouseEvent.latLng);
+			            marker.setMap(kmap);
+
+			            // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+			            infowindow.setContent(content);
+			            infowindow.open(kmap, marker);
+			   	     }   
+			    });
+			});
+		});
+
+		// 지도 위 생성된 마커를 클릭했을 때 마커를 제거
+		kakao.maps.event.addListener(marker, 'click', function() {
+					infowindow.close();
+					marker.setMap(null);
+		});
+
+		// 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
+		kakao.maps.event.addListener(kmap, 'idle', function() {
+
+			var klatlng = kmap.getCenter();
+
+		    searchDetailAddrFromCoords(klatlng, displayCenterInfo);
+    		showRoadview(kmap.getCenter());
+
+		    cmarker.setPosition(klatlng);		
+
+			var nnewCenter = new naver.maps.LatLng(klatlng.getLat(), klatlng.getLng());
+		    nmap.setCenter(nnewCenter);			
+			
+			kmap.relayout();
+		});
+
+		naver.maps.Event.addListener(nmap, 'idle', function() {
+		
+			var nlatlng = nmap.getCenter();
+			
+			pano.setPosition(nlatlng);
+			pano.setPov({
+							pan: 0,
+							tilt: 0,
+							fov: 90
+						});											
+
+			cmarker_nmap.setPosition(nlatlng);
+			
+			var knewCenter = new kakao.maps.LatLng(nlatlng.lat(), nlatlng.lng());
+		    kmap.setCenter(knewCenter);
+
+			nmap.autoResize();
+		});
+
+		// 로드뷰 초기화가 성공했을 때 발생하는 이벤트
+		kakao.maps.event.addListener(roadview, 'init', function() {
+			console.log("kmap_roadview_init");
+			rmarker.setPosition(roadview.getPosition());
+			rmarker.setMap(kmap);
+		});
+		
+		naver.maps.Event.addListener(pano, "init", function() {
+			console.log("nmap_pano_init");		    
+			rmarker_nmap.setPosition(pano.getPosition());
+			rmarker_nmap.setMap(nmap);
+		});
+			
+		// 로드뷰 내에서 위치 이동 시 발생하는 이벤트
+		kakao.maps.event.addListener(roadview, 'position_changed', function() {
+//			console.log("kmap_roadview_positionChanged");
+			var changedPosition = roadview.getPosition();
+			rmarker.setPosition(changedPosition);
+			
+//			var nPanoPosition = new naver.maps.LatLng(changedPosition.getLat(), changedPosition.getLng());
+//			console.log(nPanoPosition.lat(), nPanoPosition.lng());
+//			pano.setPosition(nPanoPosition);
+		});
+
+
+		kakao.maps.event.addListener(roadview, 'viewpoint_changed', function() {
+//			console.log("kmap_roadview_viewChanged");
+//			console.log(roadview.getViewpoint());
+
+		});		
+
+
+		roadviewContainer.addEventListener('mouseup', function(event) {
+//			console.log('mouseup');
+//			console.log('Mouse position:', event.clientX, event.clientY);
+			var vp = roadview.getViewpoint();
+			pano.setPov({
+							pan: vp.pan,
+							tilt: -vp.tilt,
+							fov: 90
+			});
+		});
+  
+				
+		// 로드뷰 내에서 위치 이동 시 발생하는 이벤트
+		naver.maps.Event.addListener(pano, 'pano_changed', function() {
+//			console.log("nmap_pano_changed");
+			pano.setSize(new naver.maps.Size(roadviewContainer.offsetWidth, roadviewContainer.offsetHeight));
+			
+			var changedPosition_nmap = pano.getPosition();
+
+			rmarker_nmap.setPosition(changedPosition_nmap);
+			npMsg.innerHTML = pano.getLocation().photodate;
+			
+//			var nRVPosition = new kakao.maps.LatLng(changedPosition_nmap.lat(), changedPosition_nmap.lng());
+//			roadviewClient.getNearestPanoId(nRVPosition, 100, function(panoId) {
+//				console.log(panoId, nRVPosition.getLat(), nRVPosition.getLng() );
+//    			roadview.setPanoId(panoId, nRVPosition); //panoId와 중심좌표를 통해 로드뷰 실행
+//			});
+		});
+
+		naver.maps.Event.addListener(pano, 'pov_changed', function() {
+//			console.log("nmap_pano_povchanged");
+//			console.log(pano.getZoom());
+			var pov = pano.getPov();
+			roadview.setViewpoint({
+									pan: pov.pan,
+									tilt: -pov.tilt,
+									zoom:0
+			});
+		});
+
+		// 지도 중심이 변경됐을 때 발생하는 이벤트
+		kakao.maps.event.addListener(kmap, 'center_changed', function() {
+			var klatlng = kmap.getCenter();
+		    cmarker.setPosition(klatlng);
+		});		
+
+		naver.maps.Event.addListener(nmap, 'center_changed', function(center) {
+
+			cmarker_nmap.setPosition(center);
+		});
+
+		// 지도 드래그가 완료됐을 때 발생하는 이벤트
+		kakao.maps.event.addListener(kmap, 'dragend', function() {
+		
+		});
+
+		naver.maps.Event.addListener(nmap, 'dragend', function() {
+
+		});
+		
+		// level 변경 이벤트 처리
+		kakao.maps.event.addListener(kmap, 'zoom_changed', function() {
+   		    nmap.setZoom(20-kmap.getLevel());
+		});
+
+		naver.maps.Event.addListener(nmap, 'zoom_changed', function(zoom) {
+			kmap.setLevel(20-zoom);
+		});
+
+		// 지도 타입 변경 이벤트 처리
+		kakao.maps.event.addListener(kmap, 'maptypeid_changed', function() {
+			
+			var mapType = kmap.getMapTypeId();
+			switch (mapType)
+			{
+				case kakao.maps.MapTypeId.ROADMAP:
+					nmap.setMapTypeId(naver.maps.MapTypeId.NORMAL);
+					cmarker.setImage(markerImage);
+					cmarker_nmap.setIcon({
+											url: './resources/img/plus.png',
+											scaledSize: new naver.maps.Size(16, 16),
+											anchor: new naver.maps.Point(8, 8)
+										});
+				break;
+				case kakao.maps.MapTypeId.HYBRID:
+					nmap.setMapTypeId(naver.maps.MapTypeId.HYBRID);
+					cmarker.setImage(markerImage_w);
+					cmarker_nmap.setIcon({
+											url: './resources/img/plus_w.png',
+											scaledSize: new naver.maps.Size(16, 16),
+											anchor: new naver.maps.Point(8, 8)
+										});
+				break;
+				default:
+					console.log("undefined maptype");
+			}
+		});
+
+
+var tempLat = 36.108108108108105;
+var tempLng = 128.39323627945828;
+
+var sw = new kakao.maps.LatLng(tempLat - 0.03, tempLng - 0.03), // 사각형 영역의 남서쪽 좌표
+    ne = new kakao.maps.LatLng(tempLat + 0.03, tempLng + 0.03); // 사각형 영역의 북동쪽 좌표
+
+// 사각형을 구성하는 영역정보를 생성합니다
+// 사각형을 생성할 때 영역정보는 LatLngBounds 객체로 넘겨줘야 합니다
+var rectangleBounds = new kakao.maps.LatLngBounds(sw, ne);
+
+// 지도에 표시할 사각형을 생성합니다
+var rectangle = new kakao.maps.Rectangle({
+    bounds: rectangleBounds, // 그려질 사각형의 영역정보입니다
+    strokeWeight: 4, // 선의 두께입니다
+    strokeColor: '#FF3DE5', // 선의 색깔입니다
+    strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+    strokeStyle: 'shortdashdot', // 선의 스타일입니다
+    fillColor: '#FF8AEF', // 채우기 색깔입니다
+    fillOpacity: 0.8 // 채우기 불투명도 입니다
+});
+
+// 지도에 사각형을 표시합니다
+rectangle.setMap(kmap);
+
+
+// functions
+
+		// 좌표로 동 정보 확인
+		function searchAddrFromCoords(coords, callback) {
+		    geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);         
+		}
+
+		// 좌표로 상세 주소 확인
+		function searchDetailAddrFromCoords(coords, callback) {
+		    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+//		    console.log("coord2Address called");
+		}
+
+		// 로드뷰 실행
+		function showRoadview(position) {
+
+			// 특정 위치의 좌표와 가까운 로드뷰의 panoId를 추출하여 로드뷰를 띄운다.
+			roadviewClient.getNearestPanoId(position, 300, function(panoId) {
+			
+				if( panoId === null )
+				{
+					roadviewContainer.style.display = 'none'; //로드뷰를 넣은 컨테이너를 숨깁니다
+					rvText[0].style.display  = 'block';
+//					rvMsg.style.display = 'block'; 
+					rmarker.setMap(null);
+				}
+				else{
+			    	roadview.setPanoId(panoId, position); //panoId와 중심좌표를 통해 로드뷰 실행
+					roadview.setViewpoint({
+											pan: 0,
+											tilt: 0,
+											zoom: 0
+										});
+					roadviewContainer.style.display = 'block'; //로드뷰를 넣은 컨테이너를 보이게합니다
+					rvText[0].style.display = 'none';
+//					rvMsg.style.display = 'none';
+					rmarker.setMap(kmap);
+
+			    }
+			});
+		}
+
+		// 지도 좌측상단에 지도 중심좌표에 대한 주소정보를 표출하는 함수입니다
+		function displayCenterInfo(result, status) {
+
+	        var infoDiv = document.getElementById('centerAddr');
+				infoDiv.innerHTML = '';
+			
+		    if (status === kakao.maps.services.Status.OK) {
+
+				infoDiv.innerHTML = '';
+		        for(var i = 0; i < result.length; i++) {
+					if (result[i].address)
+						infoDiv.innerHTML += '지도 중심 지번: ' 
+												+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + result[i].address.address_name + '">'
+												+ result[i].address.address_name + '</a>' ;
+					if (result[i].road_address)
+						infoDiv.innerHTML += '<br>' + '지도 중심 도로명: ' 
+												+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + result[i].road_address.address_name + '">'
+												+ result[i].road_address.address_name + '</a>' ;
+		        }
+				infoDiv.innerHTML += '<br>' + '지도 중심 좌표: ' 
+										+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + kmap.getCenter().getLat() + "," +kmap.getCenter().getLng() + '">'
+										+ kmap.getCenter().getLat() + "," +kmap.getCenter().getLng() + '</a>' ;
+     
+		    }
+		    what3words.api.convertTo3wa({lat:kmap.getCenter().getLat(), lng:kmap.getCenter().getLng()}, 'ko')
+				.then(function(response) {
+				
+					if (infoDiv.innerHTML.includes('W3W') === false){
+						infoDiv.innerHTML += '<br>' + '지도 중심 W3W: ///'
+											+ '<a target="_blank" href = "https://map.kakao.com/link/search////' + response.words + '">'						
+											+ response.words + '</a>';
+					}
+			});
+		}
+
+		// 브라우저 현재 위치 호출
+		function getLocation()
+		{
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(setCurrPosition);
+			} else {
+		    	console.log ("Geolocation is not supported by this browser.");
+  			}
+		}
+		
+		// 현재 위치 설정
+		function setCurrPosition(position) {
+			var newCenter = new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		    kmap.setCenter(newCenter);
+		}
+
+		// 길찾기
+		function getRoutes() {
+		
+			$.ajax({
+	    		url: "./APIcall.php",
+//	    		type: "POST",
+		  		dataType: "JSON",
+	    		success: function(result)
+	    		{
+	    			console.log("success: ", result);
+	    		},
+	    		error: function(result)
+	    		{
+	    			console.log("fail: ", result);
+	    		}
+			});
+		
+		}
+
+	</script>
+
+</body>
+
+
+</html>
