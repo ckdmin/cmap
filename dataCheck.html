@@ -11,6 +11,7 @@
 	<p>
     		<button onclick="setClusterer('seoul')">서울</button>
     		<button onclick="setClusterer('gg')">경기</button>
+    		<button onclick="setClusterer('gw')">강원</button>
 	</p> 	  
     <div id="map" style="width:100%;height:100%;"></div>
     
@@ -43,17 +44,8 @@
 function setClusterer(region){
 
 	var dataFile = '';
-	
-	switch(region){
-		case 'seoul':
-			dataFile = 'shelter_seoul.json'
-			break;
-		case 'gg':
-			dataFile = 'shelter_gg.json'
-			break;
-		default:
-			
-	}
+
+	dataFile = 'shelter_'+region+'.json';
 	
       // 데이터를 가져오기 위해 jQuery를 사용합니다
       // 데이터를 가져와 마커를 생성하고 클러스터러 객체에 넘겨줍니다
