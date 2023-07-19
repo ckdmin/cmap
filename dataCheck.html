@@ -10,7 +10,7 @@
 
 	<p>
     		<button onclick="setClusterer('seoul')">서울</button>
-    		<button onclick="">경기</button>
+    		<button onclick="setClusterer('gg')">경기</button>
 	</p> 	  
     <div id="map" style="width:100%;height:100%;"></div>
     
@@ -47,6 +47,9 @@ function setClusterer(region){
 	switch(region){
 		case 'seoul':
 			dataFile = '/cmap/shelter.json'
+			break;
+		case 'gg':
+			dataFile = 'cmap/shelter_gg.json'
 			break;
 		default:
 			
