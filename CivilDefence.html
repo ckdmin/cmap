@@ -58,9 +58,13 @@
 			var markers = $(result.data).map(function(i, data) {
 	
 				console.log(data);
-//					var marker = new kakao.maps.Marker({
-//						position: new kakao.maps.LatLng(position.lat, position.lng)            
-//					});
+				var lat = DMS2WGS84(data.위도도, data.위도분, data.위도초);
+				var lng = DMS2WGS84(data.경도도, data.경도분, data.경도초);
+				console.log (lat, lng);
+				
+					var marker = new kakao.maps.Marker({
+						position: new kakao.maps.LatLng(lat, lng)            
+					});
 					
 //					var iw = new kakao.maps.InfoWindow({
 //						content: position.no + position.name // 인포윈도우에 표시할 내용
@@ -69,11 +73,11 @@
 //					kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, iw));
 //					kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(iw));
 
-//					return marker;
-//				});
+					return marker;
+				});
 
 				// 클러스터러에 마커들을 추가합니다
-//				clusterer.addMarkers(markers);
+				clusterer.addMarkers(markers);
 							
 			
 			});
@@ -128,8 +132,8 @@
 	    	};
 		}
 		
-		function DMS2WGS84 (D, M, S, WGS84){
-			WGS84 = D + (M/60) + (S/3600);
+		function DMS2WGS84 (D, M, S){
+			return (D + (M/60) + (S/3600));
 		}
 	    
 	</script>
