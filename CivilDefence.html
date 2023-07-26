@@ -48,19 +48,36 @@
 				minLevel: 10 // 클러스터 할 최소 지도 레벨 
 			});
  
-
-		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
+		var CivilDefence[];
 		
-			console.log(result);
-			
+		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=100&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
+					
+			// 데이터에서 좌표 값을 가지고 마커를 표시합니다
+			// 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
+			CivilDefence = $(result.data).map(function(i, data) {
+				return 
+					{
+						lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
+						lng: DMS2WGS84(data.경도도, data.경도분, data.경도초),
+						region: data.도로명전체주소.substring(1, 2)
+					}
+				 
+				});
+										
+		
+			console.log(CivilDefence);	
+		});
+
+
+/*
+		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
+					
 			// 데이터에서 좌표 값을 가지고 마커를 표시합니다
 			// 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
 			var markers = $(result.data).map(function(i, data) {
 	
-				console.log(data);
 				var lat = DMS2WGS84(data.위도도, data.위도분, data.위도초);
 				var lng = DMS2WGS84(data.경도도, data.경도분, data.경도초);
-				console.log (lat, lng);
 				
 					var marker = new kakao.maps.Marker({
 						position: new kakao.maps.LatLng(lat, lng)            
@@ -81,7 +98,7 @@
 							
 			
 			});
-		
+*/		
 		function setClusterer(region){
 /*
 			var dataFile = '';
