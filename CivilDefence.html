@@ -48,19 +48,14 @@
 				minLevel: 10 // 클러스터 할 최소 지도 레벨 
 			});
  
-		var CivilDefences1;
-		var CivilDefences2;
-		var CivilDefences3;
-		var CivilDefences4;
+		var CivilDefences;
 		
 		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
-		
-		console.log(result);			
-			// 데이터에서 좌표 값을 가지고 마커를 표시합니다
+					// 데이터에서 좌표 값을 가지고 마커를 표시합니다
 			// 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
-			CivilDefences1 = $(result.data).map(function(i, data) {
+			CivilDefences = $(result.data).map(function(i, data) {
 					var CivilDefence = 	{
-											region: data.도로명전체주소.substring(0, 2),
+											region: data.소재지전체주소.substring(0, 2),
 											lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
 											lng: DMS2WGS84(data.경도도, data.경도분, data.경도초)
 										};
@@ -70,26 +65,24 @@
 				});
 										
 		
-			console.log(CivilDefences1);	
+			console.log(CivilDefences);	
 			
 			$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=2&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
-		console.log(result);					
 			// 데이터에서 좌표 값을 가지고 마커를 표시합니다
 			// 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
-			CivilDefences2 = $(result.data).map(function(i, data2) {
-					console.log(data2.도로명전체주소);
-					var CivilDefence2 = 	{
-											region: data2.도로명전체주소.substring(0, 2),
-											lat: DMS2WGS84(data2.위도도, data2.위도분, data2.위도초),
-											lng: DMS2WGS84(data2.경도도, data2.경도분, data2.경도초)
+			CivilDefences = $(result.data).map(function(i, data) {
+					var CivilDefence = 	{
+											region: data2.소재지전체주소.substring(0, 2),
+											lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
+											lng: DMS2WGS84(data.경도도, data.경도분, data.경도초)
 										};
 					
-				return CivilDefence2;
+				return CivilDefence;
 				 
 				});
 										
 		
-			console.log(CivilDefences2);	
+			console.log(CivilDefences);	
 			
 
 		});
