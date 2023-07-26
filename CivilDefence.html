@@ -48,7 +48,7 @@
 				minLevel: 10 // 클러스터 할 최소 지도 레벨 
 			});
  
-		var CivilDefences;
+		var CivilDefences = [];
 		
 		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
 					// 데이터에서 좌표 값을 가지고 마커를 표시합니다
