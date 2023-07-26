@@ -49,10 +49,15 @@
 			});
  
 		var CivilDefences = [];
+		var Area = [];
 		
 		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
 			$(result.data).map(function(i, data) {
 					var reg = data.소재지전체주소.substring(0, 2);
+					
+					if (!Area.includes(reg)){
+						Area.push(reg);
+					}
 					
 					var CivilDefence = 	{
 											region: reg,
@@ -60,14 +65,17 @@
 											lng: DMS2WGS84(data.경도도, data.경도분, data.경도초)
 										};
 					
-				CivilDefences.push(CivilDefence);
+					CivilDefences.push(CivilDefence);
 				 
-			});						
+				});						
 			console.log(CivilDefences);	
 			
 			$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=3&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
 				$(result.data).map(function(i, data) {
 						var reg = data.소재지전체주소.substring(0, 2);
+						if (!Area.includes(reg)){
+							Area.push(reg);
+						}
 						var CivilDefence = 	{
 												region: reg,
 												lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
@@ -83,6 +91,9 @@
 				$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=4&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
 					$(result.data).map(function(i, data) {
 							var reg = data.소재지전체주소.substring(0, 2);
+							if (!Area.includes(reg)){
+								Area.push(reg);
+							}
 							var CivilDefence = 	{
 													region: reg,
 													lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
@@ -97,6 +108,9 @@
 					$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=2&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
 						$(result.data).map(function(i, data) {
 								var reg = data.소재지전체주소.substring(0, 2);
+								if (!Area.includes(reg)){
+									Area.push(reg);
+								}
 								var CivilDefence = 	{
 														region: reg,
 														lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
@@ -108,6 +122,7 @@
 						console.log(CivilDefences);	
 			
 					});
+					console.log(Area);
 				});
 			});			
 		});
