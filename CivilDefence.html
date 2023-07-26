@@ -50,15 +50,15 @@
  
 		var CivilDefences;
 		
-		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=100&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
+		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
 					
 			// 데이터에서 좌표 값을 가지고 마커를 표시합니다
 			// 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
 			CivilDefences = $(result.data).map(function(i, data) {
 					var CivilDefence = 	{
+											region: data.도로명전체주소.substring(0, 2),
 											lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
-											lng: DMS2WGS84(data.경도도, data.경도분, data.경도초),
-											region: data.도로명전체주소.substring(1, 2)
+											lng: DMS2WGS84(data.경도도, data.경도분, data.경도초)
 										};
 					
 				return CivilDefence;
@@ -69,6 +69,60 @@
 			console.log(CivilDefences);	
 		});
 
+		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=2&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
+					
+			// 데이터에서 좌표 값을 가지고 마커를 표시합니다
+			// 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
+			CivilDefences = $(result.data).map(function(i, data) {
+					var CivilDefence = 	{
+											region: data.도로명전체주소.substring(0, 2),
+											lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
+											lng: DMS2WGS84(data.경도도, data.경도분, data.경도초)
+										};
+					
+				return CivilDefence;
+				 
+				});
+										
+			console.log(CivilDefences);	
+		});
+		
+		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=3&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
+					
+			// 데이터에서 좌표 값을 가지고 마커를 표시합니다
+			// 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
+			CivilDefences = $(result.data).map(function(i, data) {
+					var CivilDefence = 	{
+											region: data.도로명전체주소.substring(0, 2),
+											lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
+											lng: DMS2WGS84(data.경도도, data.경도분, data.경도초)
+										};
+					
+				return CivilDefence;
+				 
+				});
+										
+		
+			console.log(CivilDefences);	
+		});
+		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=4&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
+					
+			// 데이터에서 좌표 값을 가지고 마커를 표시합니다
+			// 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
+			CivilDefences = $(result.data).map(function(i, data) {
+					var CivilDefence = 	{
+											region: data.도로명전체주소.substring(0, 2),
+											lat: DMS2WGS84(data.위도도, data.위도분, data.위도초),
+											lng: DMS2WGS84(data.경도도, data.경도분, data.경도초)
+										};
+					
+				return CivilDefence;
+				 
+				});
+										
+		
+			console.log(CivilDefences);	
+		});				
 
 /*
 		$.get("https://api.odcloud.kr/api/civildefense/v1/shelter?page=1&perPage=5000&serviceKey=1%2BsIdmfYPd1HX%2FtVekqS9gH0pj2C5%2BziOoKhOHoxhFmHimqfXgPFebeWpQVAH6lelk7pOdmKu2hVNKCRCHDAIA%3D%3D",function(result) {
