@@ -1,0 +1,47 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script> 
+		
+	<title> 터널링 API TEST </title>
+</head>
+
+<body>
+	<button class="currBtn" onclick="getLocation()"><img width='30px' height='30px' src='./resources/img/currloc.png'></button>
+
+	<script src="https://dapi.kakao.com/v2/maps-tunneling/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=services,clusterer"></script>
+
+	<div id="kmap" style="width:100%;height:100%"></div>
+    
+	<script>
+		var kmapContainer = document.getElementById('kmap'), // 지도를 표시할 div 
+		    kmapOption = {
+		        center: new kakao.maps.LatLng(37.7156716401502, 126.73449077483106), // 지도의 중심좌표
+		        level: 4 // 지도의 확대 레벨
+		    }; 
+
+		// 지도를 생성한다 
+		var kmap = new kakao.maps.Map(kmapContainer, kmapOption); 
+
+
+		// 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+		var kmapTypeControl = new kakao.maps.MapTypeControl();
+
+		// 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+		// kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+		kmap.addControl(kmapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+		
+		// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+		var kzoomControl = new kakao.maps.ZoomControl();
+		kmap.addControl(kzoomControl, kakao.maps.ControlPosition.RIGHT);
+
+	</script>
+
+<div style="font:normal normal 400 12px/normal dotum, sans-serif; width:640px; height:392px; color:#333; position:relative"><div style="height: 360px;"><a href="https://map.kakao.com/?urlX=524447.0&amp;urlY=1082335.0&amp;itemId=18577297&amp;q=%EC%B9%B4%EC%B9%B4%EC%98%A4&amp;srcid=18577297&amp;map_type=TYPE_MAP&amp;from=roughmap" target="_blank"><img class="map" src="http://t1.daumcdn.net/roughmap/imgmap/bfcd99fefcff4d9d3f17a44c4a905bb37e09a0cea8a0d98e33b914e04bdc7e43" width="638px" height="358px" style="border:1px solid #ccc;"></a></div><div style="overflow: hidden; padding: 7px 11px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 0px 0px 2px 2px; background-color: rgb(249, 249, 249);"><a href="https://map.kakao.com" target="_blank" style="float: left;"><img src="//t1.daumcdn.net/localimg/localimages/07/2018/pc/common/logo_kakaomap.png" width="72" height="16" alt="카카오맵" style="display:block;width:72px;height:16px"></a><div style="float: right; position: relative; top: 1px; font-size: 11px;"><a target="_blank" href="https://map.kakao.com/?from=roughmap&amp;srcid=18577297&amp;confirmid=18577297&amp;q=%EC%B9%B4%EC%B9%B4%EC%98%A4&amp;rv=on" style="float:left;height:15px;padding-top:1px;line-height:15px;color:#000;text-decoration: none;">로드뷰</a><span style="width: 1px;padding: 0;margin: 0 8px 0 9px;height: 11px;vertical-align: top;position: relative;top: 2px;border-left: 1px solid #d0d0d0;float: left;"></span><a target="_blank" href="https://map.kakao.com/?from=roughmap&amp;eName=%EC%B9%B4%EC%B9%B4%EC%98%A4&amp;eX=524447.0&amp;eY=1082335.0" style="float:left;height:15px;padding-top:1px;line-height:15px;color:#000;text-decoration: none;">길찾기</a><span style="width: 1px;padding: 0;margin: 0 8px 0 9px;height: 11px;vertical-align: top;position: relative;top: 2px;border-left: 1px solid #d0d0d0;float: left;"></span><a target="_blank" href="https://map.kakao.com?map_type=TYPE_MAP&amp;from=roughmap&amp;srcid=18577297&amp;itemId=18577297&amp;q=%EC%B9%B4%EC%B9%B4%EC%98%A4&amp;urlX=524447.0&amp;urlY=1082335.0" style="float:left;height:15px;padding-top:1px;line-height:15px;color:#000;text-decoration: none;">지도 크게 보기</a></div></div></div>
+
+</body>
+
+
+</html>
