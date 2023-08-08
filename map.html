@@ -180,7 +180,12 @@
 			    searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
 			    
 			    	var detailAddr = '';
+			    	var content = '<div class="bAddr">';
+			    	
 			        if (status === kakao.maps.services.Status.OK) {
+
+						content += '<span class="title">주소정보</span>';
+        			                
 			            detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' 
 				            							            + '<a target="_blank" href = "https://map.kakao.com/link/search/' + result[0].road_address.address_name  + '">'
 			            											+ result[0].road_address.address_name + '</a></div>' : '';
@@ -202,10 +207,7 @@
 									+ '<a target="_blank" href = "https://map.kakao.com/link/search////' + response.words + '">'						
 						            + '///' + response.words + '</a></div>';
 
-					var content = '<div class="bAddr">' +
-           		  		            '<span class="title">주소정보</span>' + 
-		   		                        detailAddr + 
-        			                '</div>';
+					content += detailAddr + '</div>';
 					
 					
 					// 마커를 클릭한 위치에 표시합니다 
