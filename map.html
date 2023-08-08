@@ -458,7 +458,7 @@ rectangle.setMap(kmap);
 			
 		    if (status === kakao.maps.services.Status.OK) {
 
-				infoDiv.innerHTML = '';
+//				infoDiv.innerHTML = '';
 		        for(var i = 0; i < result.length; i++) {
 					if (result[i].address)
 						infoDiv.innerHTML += '지도 중심 지번: ' 
@@ -469,11 +469,19 @@ rectangle.setMap(kmap);
 												+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + result[i].road_address.address_name + '">'
 												+ result[i].road_address.address_name + '</a>' ;
 		        }
-				infoDiv.innerHTML += '<br>' + '지도 중심 좌표: ' 
-										+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + kmap.getCenter().getLat() + "," +kmap.getCenter().getLng() + '">'
-										+ kmap.getCenter().getLat() + "," +kmap.getCenter().getLng() + '</a>' ;
-     
 		    }
+		    else
+		    {
+						infoDiv.innerHTML += '주소검색 실패!!!'; 
+		    }
+		    
+
+			infoDiv.innerHTML += '<br>' + '지도 중심 좌표: ' 
+									+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + kmap.getCenter().getLat() + "," +kmap.getCenter().getLng() + '">'
+									+ kmap.getCenter().getLat() + "," +kmap.getCenter().getLng() + '</a>' ;
+     
+
+
 		    what3words.api.convertTo3wa({lat:kmap.getCenter().getLat(), lng:kmap.getCenter().getLng()}, 'ko')
 				.then(function(response) {
 				
