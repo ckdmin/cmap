@@ -178,35 +178,44 @@
 				.then(function(response) {
 
 			    searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+			    
+			    	var detailAddr = '';
 			        if (status === kakao.maps.services.Status.OK) {
-			            var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' 
+			            detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' 
 				            							            + '<a target="_blank" href = "https://map.kakao.com/link/search/' + result[0].road_address.address_name  + '">'
 			            											+ result[0].road_address.address_name + '</a></div>' : '';
 			            detailAddr += '<div>지번 주소 : ' 
 							            + '<a target="_blank" href = "https://map.kakao.com/link/search/' + result[0].address.address_name  + '">'
 			            				+ result[0].address.address_name + '</a></div>';
 
-						detailAddr += '<div>지도 중심 좌표: ' 
-										+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + mouseEvent.latLng.getLat() + "," +mouseEvent.latLng.getLng() + '">'
-										+ mouseEvent.latLng.getLat() + "," +mouseEvent.latLng.getLng() + '</a></div>' ;
+
+					}
+					else{
+						detailAddr = '주소 확인 불가!';
+					
+					}
+
+					detailAddr += '<div>지도 중심 좌표: ' 
+									+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + mouseEvent.latLng.getLat() + "," +mouseEvent.latLng.getLng() + '">'
+									+ mouseEvent.latLng.getLat() + "," +mouseEvent.latLng.getLng() + '</a></div>' ;
 													            				
-			            detailAddr += '<div>W3W : ' 
-										+ '<a target="_blank" href = "https://map.kakao.com/link/search////' + response.words + '">'						
-							            + '///' + response.words + '</a></div>';
+		            detailAddr += '<div>W3W : ' 
+									+ '<a target="_blank" href = "https://map.kakao.com/link/search////' + response.words + '">'						
+						            + '///' + response.words + '</a></div>';
 
-			            var content = '<div class="bAddr">' +
-           		     		            '<span class="title">주소정보</span>' + 
-		   		                         detailAddr + 
-        				                '</div>';
+					var content = '<div class="bAddr">' +
+           		  		            '<span class="title">주소정보</span>' + 
+		   		                        detailAddr + 
+        			                '</div>';
+					
+					
+					// 마커를 클릭한 위치에 표시합니다 
+		            marker.setPosition(mouseEvent.latLng);
+		            marker.setMap(kmap);
 
-			            // 마커를 클릭한 위치에 표시합니다 
-			            marker.setPosition(mouseEvent.latLng);
-			            marker.setMap(kmap);
-
-			            // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
-			            infowindow.setContent(content);
-			            infowindow.open(kmap, marker);
-			   	     }   
+		            // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+		            infowindow.setContent(content);
+		            infowindow.open(kmap, marker);   
 			    });
 			});
 		});
