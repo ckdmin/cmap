@@ -1,0 +1,31 @@
+<html>
+<head>
+	<script src="//code.jquery.com/jquery-3.7.1.js"></script> 
+		
+</head>
+
+
+<body>
+
+<!-- 스크립트 시작 -->	  
+	<script>
+
+
+if ("geolocation" in navigator) {
+  navigator.geolocation.getCurrentPosition(function(position) {
+    var latitude = position.coords.latitude;
+    var longitude = position.coords.longitude;
+    
+    console.log("현재 위치: 위도 " + latitude + ", 경도 " + longitude);
+  }, function(error) {
+    console.error("위치 정보를 가져오는 데 실패했습니다.", error);
+  });
+} else {
+  console.error("Geolocation API를 지원하지 않는 브라우저입니다.");
+}
+	</script>
+
+</body>
+
+
+</html>
