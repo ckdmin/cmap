@@ -24,6 +24,8 @@
       try {
         const response = await fetch(`${jsonUrl}?${queryParams}`);
 
+		console.log (response);
+		
         if (!response.ok) {
           throw new Error(`JSON 데이터를 가져오는데 실패했습니다. 페이지: ${pageNumber}`);
         }
