@@ -7,6 +7,25 @@
   <button id="fetchAndCombineButton">여러 페이지의 JSON 데이터 가져오기 및 합치기</button>
 
   <script>
+  
+  
+			$.ajax({
+	    		url: "./dhlotteryAPIcall.php",
+		  		dataType: "JSON",
+		  		data: {
+		  			PAGENO: 1
+		  		},
+	    		success: function(result)
+	    		{
+	    			console.log("success: ", result);
+	    		},
+	    		error: function(result)
+	    		{
+	    			console.log("fail: ", result);
+	    		}
+			});
+			  
+/*  
     // JSON 데이터를 저장할 배열
     const jsonDataArray = [];
 
@@ -82,6 +101,7 @@
     document.getElementById('fetchAndCombineButton').addEventListener('click', () => {
       fetchAndCombineJSONData();
     });
+*/    
   </script>
 </body>
 </html>
