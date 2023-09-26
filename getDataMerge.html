@@ -16,9 +16,9 @@
 
     // JSON 데이터를 가져오는 함수
     async function fetchJSONData(pageNumber) {
-      const jsonUrl = `../dhlotteryAPIcall.php`;
+      const jsonUrl = `./dhlotteryAPIcall.php`;
 	  const params = {
-		  PAGENO: '${pageNumber}'
+		  PAGENO: pageNumber
 	  };
 	  const queryParams = new URLSearchParams(params).toString();      
       try {
