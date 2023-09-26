@@ -11,14 +11,14 @@
 
   <script>
   
-   
+
+
+
+		
 			$.ajax({
 	    		url: "./dhlotteryAPIcall_2.php",
-
-		  		dataType: "json",
-		  		data: {
-		  			PAGENO: 1
-		  		},
+//	    		type: "POST",
+		  		dataType: "JSON",
 	    		success: function(result)
 	    		{
 	    			console.log("success: ", result);
@@ -28,6 +28,10 @@
 	    			console.log("fail: ", result);
 	    		}
 			});
+		
+		
+		
+
 			  
 /*  
     // JSON 데이터를 저장할 배열
