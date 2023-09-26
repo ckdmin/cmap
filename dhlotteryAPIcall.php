@@ -7,9 +7,6 @@ $url = "https://dhlottery.co.kr/store.do?method=sellerInfo645Result&searchType=3
 
 $ch = curl_init();                                 //curl 초기화
 
-var_dump($url);
-print_r($url);
-
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
