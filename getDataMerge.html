@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>여러 페이지의 JSON 데이터 합치기</title>
+</head>
+<body>
+  <button id="fetchAndCombineButton">여러 페이지의 JSON 데이터 가져오기 및 합치기</button>
+
+  <script>
+    // JSON 데이터를 저장할 배열
+    const jsonDataArray = [];
+
+    // 시작 페이지와 끝 페이지 설정
+    const startPage = 1;
+    const endPage = 5; // 예시로 5개 페이지를 순회하도록 설정
+
+    // JSON 데이터를 가져오는 함수
+    async function fetchJSONData(pageNumber) {
+      const jsonUrl = `https://dhlottery.co.kr/store.do?method=sellerInfo645Result&searchType=3&nowPage=${pageNumber}&sltSIDO2=%EA%B2%BD%EA%B8%B0&sltGUGUN2&rtlrSttus=001`;
+      try {
+        const response = await fetch(jsonUrl);
+
+        if (!response.ok) {
+          throw new Error(`JSON 데이터를 가져오는데 실패했습니다. 페이지: ${pageNumber}`);
+        }
+
+        const jsonData = await response.json();
+        return jsonData;
+      } catch (error) {
+        console.error('오류 발생:', error);
+        throw error;
+      }
+    }
+
+    // 여러 페이지의 JSON 데이터를 가져와서 합치는 함수
+    async function fetchAndCombineJSONData() {
+      try {
+        // 여러 페이지의 데이터를 동시에 가져오기
+        const promises = [];
+        for (let page = startPage; page <= endPage; page++) {
+          promises.push(fetchJSONData(page));
+        }
+        const dataArray = await Promise.all(promises);
+
+        // 가져온 데이터를 배열에 추가
+        jsonDataArray.push(...dataArray);
+
+        // 모든 JSON 데이터를 합치기
+        const combinedData = jsonDataArray.reduce((acc, data) => {
+          return { ...acc, ...data };
+        }, {});
+
+        // JSON 데이터를 문자열로 변환
+        const jsonString = JSON.stringify(combinedData, null, 2);
+
+        // 다운로드 링크 생성
+        const a = document.createElement('a');
+        a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonString);
+        a.download = 'combinedData.json';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        
+        // 다운로드 링크를 클릭하여 파일로 저장
+        a.click();
+
+        // 다운로드 링크를 제거
+        document.body.removeChild(a);
+
+        console.log('JSON 데이터가 성공적으로 합쳐져 파일로 저장되었습니다.');
+      } catch (error) {
+        console.error('파일 저장 중 오류 발생:', error);
+      }
+    }
+
+    // 버튼 클릭 이벤트 핸들러
+    document.getElementById('fetchAndCombineButton').addEventListener('click', () => {
+      fetchAndCombineJSONData();
+    });
+  </script>
+</body>
+</html>
