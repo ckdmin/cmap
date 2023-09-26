@@ -12,8 +12,8 @@ curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 $response = curl_exec($ch);
 curl_close($ch);
 
-echo $response;
+// echo $response;
 
-// return $response;
+ return $response;
 
 ?>
