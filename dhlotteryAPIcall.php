@@ -1,8 +1,13 @@
 <?php
 
-//$url = "https://dhlottery.co.kr/store.do?method=sellerInfo645Result&searchType=3&sltSIDO2=%EA%B2%BD%EA%B8%B0&sltGUGUN2&rtlrSttus=001&nowPage=".$_GET["PAGENO"];
+$url = "https://dhlottery.co.kr/store.do?method=sellerInfo645Result&searchType=3&sltSIDO2=%EA%B2%BD%EA%B8%B0&sltGUGUN2&rtlrSttus=001&nowPage=".$_GET["PAGENO"];
 
-$url = "https://dhlottery.co.kr/store.do?method=sellerInfo645Result&searchType=3&nowPage=2&sltSIDO2=%EA%B2%BD%EA%B8%B0&sltGUGUN2&rtlrSttus=001"
+//$url = "https://dhlottery.co.kr/store.do?method=sellerInfo645Result&searchType=3&nowPage=2&sltSIDO2=%EA%B2%BD%EA%B8%B0&sltGUGUN2&rtlrSttus=001"
+
+echo '<script>';
+echo 'console.log("'.$url.'")';
+echo '</script>';
+
 
 $ch = curl_init();                                 //curl 초기화
 
@@ -16,7 +21,7 @@ curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 $response = curl_exec($ch);
 curl_close($ch);
 
- echo $response;
+echo $response;
 
 // return $response;
 
