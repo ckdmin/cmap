@@ -16,9 +16,13 @@
 
     // JSON 데이터를 가져오는 함수
     async function fetchJSONData(pageNumber) {
-      const jsonUrl = `https://dhlottery.co.kr/store.do?method=sellerInfo645Result&searchType=3&nowPage=${pageNumber}&sltSIDO2=%EA%B2%BD%EA%B8%B0&sltGUGUN2&rtlrSttus=001`;
+      const jsonUrl = `../dhlotteryAPIcall.php`;
+	  const params = {
+		  PAGENO: '${pageNumber}'
+	  };
+	  const queryParams = new URLSearchParams(params).toString();      
       try {
-        const response = await fetch(jsonUrl);
+        const response = await fetch(`${jsonUrl}?${queryParams}`);
 
         if (!response.ok) {
           throw new Error(`JSON 데이터를 가져오는데 실패했습니다. 페이지: ${pageNumber}`);
