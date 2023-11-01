@@ -20,6 +20,9 @@
 	<input type="text" id="sample4_detailAddress" placeholder="상세주소">
 	<input type="text" id="sample4_extraAddress" placeholder="참고항목">
 
+	<p id="result_rest"></p> <!-- 결과를 표시할 요소를 만듭니다. -->
+
+
 	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
@@ -108,7 +111,6 @@
 		    // 정상적으로 검색이 완료됐으면 
 		     if (status === kakao.maps.services.Status.OK) {
 
-			  <p id="result_rest"></p> <!-- 결과를 표시할 요소를 만듭니다. -->
 
 			    var resultElement = document.getElementById("result_rest"); // 결과를 표시할 요소를 선택합니다.
 			    resultElement.innerHTML = result; // 요소의 내용을 변수 값으로 설정합니다.
