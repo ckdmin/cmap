@@ -20,8 +20,7 @@
 	<input type="text" id="sample4_detailAddress" placeholder="상세주소">
 	<input type="text" id="sample4_extraAddress" placeholder="참고항목">
 
-	<div id="output"></div> <!-- 결과를 표시할 div 요소를 만듭니다. -->
-
+  <pre id="output"></pre>
 
 	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
@@ -112,18 +111,17 @@
 		     if (status === kakao.maps.services.Status.OK) {
 
 
-				var resultString = JSON.stringify(result);
+//				var resultString = JSON.stringify(result);
 //				var prettyJSON = JSON.stringify(result, null, 2);
 
 //			    var resultElement = document.getElementById("result_rest"); // 결과를 표시할 요소를 선택합니다.
 //			    resultElement.innerHTML = prettyJSON; // 요소의 내용을 변수 값으로 설정합니다.
 
-			    var outputDiv = document.getElementById("output"); // 결과를 표시할 div 요소를 선택합니다.
-    			var text = JSON.stringify(resultString, null, 2); // 객체를 JSON 문자열로 변환하고 들여쓰기를 설정합니다.
-
-			    // 화면에 텍스트를 추가합니다.
-			    var textNode = document.createTextNode(text);
-			    outputDiv.appendChild(textNode);
+    var outputElement = document.getElementById("output"); // 결과를 표시할 요소를 선택합니다.
+    var text = JSON.stringify(result, null, 2); // 객체를 JSON 문자열로 변환하고 들여쓰기를 설정합니다.
+    
+    // 화면에 텍스트를 설정합니다.
+    outputElement.textContent = text;
     
 //				console.log (result);
 
