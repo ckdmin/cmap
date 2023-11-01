@@ -114,8 +114,11 @@
 
 				var resultString = JSON.stringify(result);
 
+				var prettyJSON = JSON.stringify(JSON.parse(resultString), null, 2);
+
+
 			    var resultElement = document.getElementById("result_rest"); // 결과를 표시할 요소를 선택합니다.
-			    resultElement.innerHTML = resultString; // 요소의 내용을 변수 값으로 설정합니다.
+			    resultElement.innerHTML = prettyJSON; // 요소의 내용을 변수 값으로 설정합니다.
 
 //				console.log (result);
 
