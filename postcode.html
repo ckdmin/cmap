@@ -112,8 +112,10 @@
 		     if (status === kakao.maps.services.Status.OK) {
 
 
+				var resultString = JSON.stringify(result);
+
 			    var resultElement = document.getElementById("result_rest"); // 결과를 표시할 요소를 선택합니다.
-			    resultElement.innerHTML = result; // 요소의 내용을 변수 값으로 설정합니다.
+			    resultElement.innerHTML = resultString; // 요소의 내용을 변수 값으로 설정합니다.
 
 //				console.log (result);
 
