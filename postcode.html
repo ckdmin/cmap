@@ -1,0 +1,36 @@
+<html>
+<head>
+		
+	<title> POST CODE </title>
+	
+	<style>
+
+	</style>
+
+</head>
+
+
+<body>
+
+	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
+ 	
+ 	<script>
+
+
+		// 주소-좌표 변환 객체를 생성합니다
+		var geocoder = new kakao.maps.services.Geocoder();
+
+		// 주소로 좌표를 검색합니다
+		geocoder.addressSearch('제주특별자치도 제주시 첨단로 242', function(result, status) {
+
+		    // 정상적으로 검색이 완료됐으면 
+		     if (status === kakao.maps.services.Status.OK) {
+
+				console.log (result);
+
+	    } 
+	});    
+
+	</script>
+</body>
+</html>
