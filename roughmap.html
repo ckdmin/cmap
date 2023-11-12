@@ -117,6 +117,42 @@
 
 
 
+
+								<!--
+									* daum 지도 - 약도서비스
+									* 한 페이지 내에 약도를 2개 이상 넣을 경우에는
+									* 약도의 수 만큼 소스를 새로 생성, 삽입해야 합니다.
+								-->
+								<!-- 1. 약도 노드 -->
+								<div id="daumRoughmapContainer1475105195084" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+
+								<!-- 2. 설치 스크립트 -->
+								<script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+
+								<!-- 3. 실행 스크립트 -->
+								<script charset="UTF-8">
+
+
+
+										if(navigator.userAgent.match(/Mobile|iP(hone|od)|BlackBerry|IEMobile|Kindle|NetFront|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune/)){
+
+												new daum.roughmap.Lander({
+													"timestamp" : "1475105195084",
+													"key" : "da84",
+													"mapWidth" : "350",
+													"mapHeight" : "400"
+												}).render();
+
+										}else{
+											new daum.roughmap.Lander({
+												"timestamp" : "1475105195084",
+												"key" : "da84",
+												"mapWidth" : "920",
+												"mapHeight" : "500"
+											}).render();
+										}
+								</script>
+
 </body>
 
 
