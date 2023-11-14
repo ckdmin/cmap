@@ -33,7 +33,8 @@
 
 <body>
 	<button class="currBtn" onclick="getLocation()"><img width='30px' height='30px' src='./resources/img/currloc.png'></button>
-
+    <p><span id="maplevel"></span></p>
+    
 	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
 
 
@@ -72,6 +73,9 @@
 		// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성 및 추가
 		var kzoomControl = new kakao.maps.ZoomControl();
 		kmap.addControl(kzoomControl, kakao.maps.ControlPosition.RIGHT);
+
+// 지도 레벨을 표시합니다
+displayLevel();
 
 // kakaomap 로드뷰 생성
 		var roadviewContainer = document.getElementById('roadview'); //로드뷰를 표시할 div
@@ -540,6 +544,12 @@ rectangle.setMap(kmap);
 			});
 		
 		}
+
+		function displayLevel(){
+		    var levelEl = document.getElementById('maplevel');
+		    levelEl.innerHTML = ' MapLevel: ' + map.getLevel();
+		}
+
 
 	</script>
 
