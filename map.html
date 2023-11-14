@@ -248,6 +248,10 @@ displayLevel();
 			kmap.relayout();
 		});
 
+		kakao.maps.event.addListener(kmap, 'zoom_changed', function() {
+			displayLevel();
+		});
+
 		naver.maps.Event.addListener(nmap, 'idle', function() {
 		
 			var nlatlng = nmap.getCenter();
