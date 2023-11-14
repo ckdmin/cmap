@@ -26,6 +26,7 @@
 	    #rvMsg {text-align: center; font-weight: normal;font-size:15px;position: relative;color:white}
 	    .wrap_npText {position:absolute;right:0px;top:0px;z-index:2;}
 	    #npMsg {text-align: center; font-weight: normal;font-size:15px;position: relative;color:black;background:white}		
+	    #maplevel {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;font-size:15px;}
 	</style>
 
 </head>
@@ -33,7 +34,7 @@
 
 <body>
 	<button class="currBtn" onclick="getLocation()"><img width='30px' height='30px' src='./resources/img/currloc.png'></button>
-    <span id="maplevel"></span>
+    <div id="maplevel"></div>
     
 	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
 
