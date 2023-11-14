@@ -11,7 +11,7 @@
 	    #centerAddr {display:block;margin-top:2px;font-weight: normal;font-size:13px;position: relative;background:white;}
 	    .bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;font-size:15px;}
 	    .currBtn {
-       				top:250px;
+       				top:280px;
 					right:30;
 					width:34px;
 					height:34px;
@@ -30,7 +30,7 @@
 		    			font-weight: normal;
 	    				font-size:13px;
 	    				position: absolute; 
-	    					top: 280px; 
+	    					top: 250px; 
 	    					right: 30px;
 	    				background:transparent;
 						z-index: 2;    				
@@ -41,8 +41,9 @@
 
 
 <body>
+  <div id="maplevel"></div>
 	<button class="currBtn" onclick="getLocation()"><img width='30px' height='30px' src='./resources/img/currloc.png'></button>
-    <div id="maplevel"></div>
+   
     
 	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
 
