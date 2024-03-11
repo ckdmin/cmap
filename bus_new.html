@@ -52,10 +52,15 @@
 		    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
 		    marker = new kakao.maps.Marker({ 
 		    									map: map,
-		    									position : cities[i].latlng,
-		    									name: cities[i].name + "(" + cities[i].date + ")"
+		    									position : cities[i].latlng
 		    							  });
-//		    marker.setMap(map);
+
+			infowindow = new kakao.maps.InfoWindow({
+													    position : cities[i].latlng, 
+													    content : cities[i].name + "(" + cities[i].date + ")" 
+												  });
+  
+			infowindow.open(map, marker); 
     
 		    // LatLngBounds 객체에 좌표를 추가합니다
 		    bounds.extend(cities[i].latlng);
