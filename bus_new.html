@@ -64,11 +64,66 @@
 
 		];
 
+		var nextcities = [
+			{
+				name: '서울',
+				latlng: new kakao.maps.LatLng(37.56682420267543, 126.978652258823)
+			},
+			{
+				name: '경기',
+				latlng: new kakao.maps.LatLng(37.28900614836743, 127.05346120005058)
+			},
+			{
+				name: '안동',
+				latlng: new kakao.maps.LatLng(36.56846076327041, 128.72958737940726)
+			},
+			{
+				name: '파주',
+				latlng: new kakao.maps.LatLng(37.76004319269484, 126.77988022977084)
+			},			
+			{
+				name: '강릉',
+				latlng: new kakao.maps.LatLng(37.75211261895363, 128.8759039903278)
+			},	
+			{
+				name: '인제',
+				latlng: new kakao.maps.LatLng(38.069706161608956, 128.1703491696283)
+			},			
+			{
+				name: '정선',
+				latlng: new kakao.maps.LatLng(37.3805844996162, 128.660813602092)
+			},					
+			{
+				name: '양산',
+				latlng: new kakao.maps.LatLng(35.3349920568695, 129.037272788817)
+			},
+			{
+				name: '청주',
+				latlng: new kakao.maps.LatLng(36.6346648762192, 127.4884753972105)
+			},
+			{
+				name: '익산',
+				latlng: new kakao.maps.LatLng(35.94826286005042, 126.95774448669367)
+			},
+			{
+				name: '동해',
+				latlng: new kakao.maps.LatLng(37.5247415047966, 129.11429929301)
+			},
+			{
+				name: '군산',
+				latlng: new kakao.maps.LatLng(35.9674665619521, 126.736840487467)
+			},
+			{
+				name: '경주',
+				latlng: new kakao.maps.LatLng(35.85621665939485, 129.2247816627553)
+			}
+		];
+		
 		// 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
 		var bounds = new kakao.maps.LatLngBounds();    
 
 
-		var i, marker;
+		var i, marker, nmarker;
 		for (i = 0; i < cities.length; i++) {
 		    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
 		    marker = new kakao.maps.Marker({ 
@@ -85,6 +140,33 @@
     
 		    // LatLngBounds 객체에 좌표를 추가합니다
 		    bounds.extend(cities[i].latlng);
+		}
+
+	    var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
+
+	    // 마커 이미지의 이미지 크기 입니다
+    	var imageSize = new kakao.maps.Size(24, 35); 
+    
+	    // 마커 이미지를 생성합니다    
+	    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+    
+		for (i = 0; i < nextcities.length; i++) {
+		    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
+		    nmarker = new kakao.maps.Marker({ 
+		    									map: map,
+		    									image : markerImage,
+		    									position : nextcities[i].latlng
+		    							  });
+
+			ninfowindow = new kakao.maps.InfoWindow({
+													    position : nextcities[i].latlng, 
+													    content : nextcities[i].name 
+												  });
+  
+			ninfowindow.open(map, nmarker); 
+    
+		    // LatLngBounds 객체에 좌표를 추가합니다
+		    bounds.extend(nextcities[i].latlng);
 		}
 
 		// LatLngBounds 객체에 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다
