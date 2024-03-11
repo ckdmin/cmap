@@ -158,13 +158,12 @@
 		    									position : nextcities[i].latlng
 		    							  });
 
-			ninfowindow = new kakao.maps.InfoWindow({
+			customOverlay = new kakao.maps.CustomOverlay({
+														map: map,
 													    position : nextcities[i].latlng, 
 													    content : nextcities[i].name 
 												  });
-  
-			ninfowindow.open(map, nmarker); 
-    
+      
 		    // LatLngBounds 객체에 좌표를 추가합니다
 		    bounds.extend(nextcities[i].latlng);
 		}
