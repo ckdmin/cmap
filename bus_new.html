@@ -30,10 +30,17 @@
 		var map = new kakao.maps.Map(mapContainer, mapOption); 
 		
 		
-		var points = [
-    		new kakao.maps.LatLng(33.452278, 126.567803),
-		    new kakao.maps.LatLng(33.452671, 126.574792),
-		    new kakao.maps.LatLng(33.451744, 126.572441)
+		var cities = [
+			{
+				name: '제주',
+				latlng: new kakao.maps.LatLng(33.452278, 126.567803)
+				date: '2000-00-00'
+			},
+			{
+				name: '부산',
+				latlng: new kakao.maps.LatLng(33.452278, 126.567803)
+				date: '2000-00-00'
+			}
 		];
 
 		// 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
@@ -41,13 +48,17 @@
 
 
 		var i, marker;
-		for (i = 0; i < points.length; i++) {
+		for (i = 0; i < cities.length; i++) {
 		    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
-		    marker =     new kakao.maps.Marker({ position : points[i] });
-		    marker.setMap(map);
+		    marker = new kakao.maps.Marker({ 
+		    									map: map,
+		    									position : cities[i].latlng,
+		    									name: cities[i].name + "(" + cities[i].date + ")"
+		    							  });
+//		    marker.setMap(map);
     
 		    // LatLngBounds 객체에 좌표를 추가합니다
-		    bounds.extend(points[i]);
+		    bounds.extend(cities[i].latlng);
 		}
 
 		// LatLngBounds 객체에 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다
