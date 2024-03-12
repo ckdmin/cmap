@@ -27,40 +27,39 @@
 
 		// 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
 		var map = new kakao.maps.Map(mapContainer, mapOption); 
-		
 
-				$.ajax({
-		    		url: "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_ADEMD_INFO&key=BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1&domain=https://ckdmin.github.io/&geomFilter=point(126.73446927413438 37.715658077169245)&crs=EPSG:4326",
-					dataType: "jsonp",
-					success: function(res) {
-						console.log("success: ", res.response.result.featureCollection.features[0].geometry.coordinates);
 
-/*
-						var decodedString = decodeURIComponent(result);
+// JSONP 요청 보내기
+$.ajax({
+    url: "https://api.example.com/data",
+    dataType: "jsonp",
+    data: {
+        service: "data"",
+		request: "GetFeature"
+		data: "LT_C_ADEMD_INFO"
+		key: "BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1"
+		domain: "https://ckdmin.github.io/"
+		geomFilter: "point(126.73446927413438 37.715658077169245)"
+		crs: "EPSG:4326",
+        callback: "handleResponse" // 콜백 함수 이름 지정
+    },
+    success: function(data) {
+        // JSONP 요청이 성공적으로 완료되면 이 콜백이 호출됩니다.
+        handleResponse(data);
+    },
+    error: function(xhr, status, error) {
+        // 오류 처리
+        console.error("Error: " + status + ", " + error);
+    }
+});
 
-						var toRemove = ["</head>", "</body>"];
-					
-						var filteredString = decodedString.substring(decodedString.indexOf(toRemove[0]) + toRemove[0].length);
-						filteredString = filteredString.substring(0, decodedString.indexOf(toRemove[1]));
+// JSONP 응답을 처리하는 콜백 함수 정의
+function handleResponse(data) {
+    console.log("Received data:", data);
+	console.log("success: ", data.response.result.featureCollection.features[0].geometry.coordinates);
 
-						var count = filteredString.toLowerCase().split('<a').length - 1;
+}
 
-						for (var i = 0; i < count; i++) { // 모든 a 태그를 반복하며 삭제
-							var start = filteredString.indexOf("<a"); // 삭제할 부분의 시작 인덱스
-							var end = filteredString.indexOf("/a>"); // 삭제할 부분의 끝 인덱스
-							filteredString = filteredString.substring(0, start) + filteredString.substring(end + 3);
-						}	
-					
-						var el = document.getElementById( 'result' );
-
-						el.innerHTML = filteredString;
-*/					
-					},
-					error: function(res) {
-						console.log("fail: ", res);
-					}
-				});
-						
 
 		
 	</script>
