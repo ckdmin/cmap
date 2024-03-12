@@ -28,7 +28,38 @@
 		// 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
 		var map = new kakao.maps.Map(mapContainer, mapOption); 
 		
-		
+
+				$.ajax({
+		    		url: "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_ADEMD_INFO&key=BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1&domain=https://ckdmin.github.io/&geomFilter=point(126.73446927413438 37.715658077169245)&crs=EPSG:4326",
+					success: function(result) {
+						console.log("success: ", result);
+
+/*
+						var decodedString = decodeURIComponent(result);
+
+						var toRemove = ["</head>", "</body>"];
+					
+						var filteredString = decodedString.substring(decodedString.indexOf(toRemove[0]) + toRemove[0].length);
+						filteredString = filteredString.substring(0, decodedString.indexOf(toRemove[1]));
+
+						var count = filteredString.toLowerCase().split('<a').length - 1;
+
+						for (var i = 0; i < count; i++) { // 모든 a 태그를 반복하며 삭제
+							var start = filteredString.indexOf("<a"); // 삭제할 부분의 시작 인덱스
+							var end = filteredString.indexOf("/a>"); // 삭제할 부분의 끝 인덱스
+							filteredString = filteredString.substring(0, start) + filteredString.substring(end + 3);
+						}	
+					
+						var el = document.getElementById( 'result' );
+
+						el.innerHTML = filteredString;
+*/					
+					},
+					error: function(result) {
+						console.log("fail: ", result);
+					}
+				});
+						
 
 		
 	</script>
