@@ -31,7 +31,7 @@
 
 // JSONP 요청 보내기
 $.ajax({
-    url: "https://api.example.com/data",
+    url: "https://api.vworld.kr/req/data",
     dataType: "jsonp",
     data: {
         service: "data",
@@ -40,13 +40,12 @@ $.ajax({
 		key: "BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1",
 		domain: "https://ckdmin.github.io/",
 		geomFilter: "point(126.73446927413438 37.715658077169245)",
-		crs: "EPSG:4326"
+		crs: "EPSG:4326",
+        callback: "handleResponse" // 콜백 함수 이름 지정
     },
     success: function(data) {
         // JSONP 요청이 성공적으로 완료되면 이 콜백이 호출됩니다.
-    	console.log("Received data:", data);
-		console.log("success: ", data.response.result.featureCollection.features[0].geometry.coordinates);
-	
+        handleResponse(data);
     },
     error: function(xhr, status, error) {
         // 오류 처리
@@ -60,8 +59,7 @@ function handleResponse(data) {
 	console.log("success: ", data.response.result.featureCollection.features[0].geometry.coordinates);
 
 }
-
-
+						
 		
 	</script>
 
