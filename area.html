@@ -15,8 +15,8 @@
 
 <body>
 
-<input type="text" id="textInput">
-<button onclick="getText()">입력 받기</button>
+	<input type="text" id="textInput">
+	<button onclick="getText()"> 확인 </button>
 
     
 	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
@@ -32,72 +32,86 @@
 		// 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
 		var map = new kakao.maps.Map(mapContainer, mapOption); 
 
-
-// JSONP 요청 보내기
-$.ajax({
-    url: "https://api.vworld.kr/req/data",
-    dataType: "jsonp",
-    data: {
-        service: "data",
-		request: "GetFeature",
-		data: "LT_C_ADEMD_INFO",
-		key: "BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1",
-		domain: "https://ckdmin.github.io/",
-		geomFilter: "point(126.73446927413438 37.715658077169245)",
-		crs: "EPSG:4326"
-    },
-    success: function(data) {
-
-		handleResponse(data);
+		function APIcall(filterType, filterVal){
+		
+			var val;
 			
-    },
-    error: function(xhr, status, error) {
-        // 오류 처리
-        console.error("Error: " + status + ", " + error);
-    }
-});
+			if (filterType == "geomFilter")	{
+					filter = "point(" + filterVal.lng + "" + filterVal.lat + ")";
+				}
+			else if (filterType == "attrFilter")	{
+					filter = "emd_kor_nm:like:" + filterVal.text;
+				}
+			else	{
 
-// JSONP 응답을 처리하는 콜백 함수 정의
-function handleResponse(data) {
-		var areaProperties = data.response.result.featureCollection.features[0].properties;
-		var areadata = data.response.result.featureCollection.features[0].geometry.coordinates[0][0];
-		
-//		console.log(areadata.length, areadata[0]);
-		var polygonPath=[];
-		
-		for (var i = 0, len = areadata.length; i < len; i++) {
+				}
+			
+			// JSONP 요청 보내기
+			$.ajax({
+				url: 		"https://api.vworld.kr/req/data",
+				dataType: 	"jsonp",
+				data: 	{
+					service: "data",
+					request: "GetFeature",
+					data: "LT_C_ADEMD_INFO",
+					key: "BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1",
+					domain: "https://ckdmin.github.io/",
+//					geomFilter: "point(126.73446927413438 37.715658077169245)",
+					crs: "EPSG:4326",
+					filterType: filter
+				},
+				success: function(data) {
+					handleResponse(data);
+				},
+				error: function(xhr, status, error) {
+        			// 오류 처리
+					console.error("Error: " + status + ", " + error);
+				}
+			});
+		}
 
-			polygonPath[i] = new kakao.maps.LatLng(areadata[i][1], areadata[i][0]);
+		// JSONP 응답을 처리하는 콜백 함수 정의
+		function handleResponse(data) {
+			var areaProperties = data.response.result.featureCollection.features[0].properties;
+			var areadata = data.response.result.featureCollection.features[0].geometry.coordinates[0][0];
+		
+			//		console.log(areadata.length, areadata[0]);
+			var polygonPath=[];
+		
+			for (var i = 0, len = areadata.length; i < len; i++) {
+				polygonPath[i] = new kakao.maps.LatLng(areadata[i][1], areadata[i][0]);
+			}
+			
+			console.log(polygonPath);
+		
+			// 지도에 표시할 다각형을 생성합니다
+			var polygon = new kakao.maps.Polygon({
+			    path:polygonPath, // 그려질 다각형의 좌표 배열입니다
+			    strokeWeight: 3, // 선의 두께입니다
+			    strokeColor: '#39DE2A', // 선의 색깔입니다
+			    strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+			    strokeStyle: 'solid', // 선의 스타일입니다
+			    fillColor: '#A2FF99', // 채우기 색깔입니다
+			    fillOpacity: 0.7 // 채우기 불투명도 입니다
+			});
+
+			// 지도에 다각형을 표시합니다
+			polygon.setMap(map);
+		
 
 		}
-		
-		console.log(polygonPath);
-		
-// 지도에 표시할 다각형을 생성합니다
-var polygon = new kakao.maps.Polygon({
-    path:polygonPath, // 그려질 다각형의 좌표 배열입니다
-    strokeWeight: 3, // 선의 두께입니다
-    strokeColor: '#39DE2A', // 선의 색깔입니다
-    strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-    strokeStyle: 'solid', // 선의 스타일입니다
-    fillColor: '#A2FF99', // 채우기 색깔입니다
-    fillOpacity: 0.7 // 채우기 불투명도 입니다
-});
-
-// 지도에 다각형을 표시합니다
-polygon.setMap(map);
-		
-
-}
 						
-
-function getText() {
-  // 입력된 텍스트 가져오기
-  var text = document.getElementById("textInput").value;
-  
-	console.log(text);
-	
-}
+		function getText() {
+			// 입력된 텍스트 가져오기
+			var text = document.getElementById("textInput").value;
+			
+			console.log(text);
+			filterVal.lat = "37.715658077169245";
+			filterVal.lng = "126.73446927413438"; 
+			
+			APIcall("geomFilter", filterVal);
+			
+		}
 
 
 		
