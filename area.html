@@ -58,7 +58,7 @@ function handleResponse(data) {
 		var areadata = data.response.result.featureCollection.features[0].geometry.coordinates[0][0];
 		
 //		console.log(areadata.length, areadata[0]);
-		var polygonPath[areadata.length];
+		var polygonPath=[];
 		
 		for (var i = 0, len = areadata.length; i < len; i++) {
 
