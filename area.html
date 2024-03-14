@@ -43,12 +43,9 @@ $.ajax({
 		crs: "EPSG:4326"
     },
     success: function(data) {
-        // JSONP 요청이 성공적으로 완료되면 이 콜백이 호출됩니다.
-//        handleResponse(data);
 
-    console.log("Received data:", data);
-	console.log("success: ", data.response.result.featureCollection.features[0].geometry.coordinates);
-	
+		handleResponse(data);
+			
     },
     error: function(xhr, status, error) {
         // 오류 처리
@@ -58,8 +55,9 @@ $.ajax({
 
 // JSONP 응답을 처리하는 콜백 함수 정의
 function handleResponse(data) {
-    console.log("Received data:", data);
-	console.log("success: ", data.response.result.featureCollection.features[0].geometry.coordinates);
+		var areadata = data.response.result.featureCollection.features[0].geometry.coordinates[0];
+		
+		console.log(areadata.length, areadata[0]);
 
 }
 						
