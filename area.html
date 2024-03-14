@@ -55,7 +55,7 @@ $.ajax({
 
 // JSONP 응답을 처리하는 콜백 함수 정의
 function handleResponse(data) {
-		var areadata = data.response.result.featureCollection.features[0].geometry.coordinates[0];
+		var areadata = data.response.result.featureCollection.features[0].geometry.coordinates[0][0];
 		
 		console.log(areadata.length, areadata[0]);
 
