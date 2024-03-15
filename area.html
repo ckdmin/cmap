@@ -72,6 +72,8 @@
 
 		// JSONP 응답을 처리하는 콜백 함수 정의
 		function handleResponse(data) {
+			console.log (data);
+			
 			var areaProperties = data.response.result.featureCollection.features[0].properties;
 			var areadata = data.response.result.featureCollection.features[0].geometry.coordinates[0][0];
 		
