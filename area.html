@@ -37,7 +37,7 @@
 			var val;
 			
 			if (filterType == "geomFilter")	{
-					filter = "point(" + filterVal.lng + "" + filterVal.lat + ")";
+					filter = "point(" + filterVal.lng + " " + filterVal.lat + ")";
 				}
 			else if (filterType == "attrFilter")	{
 					filter = "emd_kor_nm:like:" + filterVal.text;
