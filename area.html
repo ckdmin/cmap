@@ -41,6 +41,22 @@
 		    fillColor: '#A2FF99', // 채우기 색깔입니다
 		    fillOpacity: 0.7 // 채우기 불투명도 입니다
 		});
+
+
+		kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+//		    alert(mouseEvent.latLng instanceof kakao.maps.LatLng); // true
+
+			var filter = {};
+			var latlng = mouseEvent.latLng;
+			
+				filter.type = 	"geomFilter";
+				filter.lat = 	latlng.getLat() ;
+				filter.lng =	latlng.getLng() ;	
+								
+				APIcall(filter);				
+
+		});
+
 			
 		function APIcall(filter){
 
