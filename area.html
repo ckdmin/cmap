@@ -8,6 +8,7 @@
 	<title> - </title>
 	
 	<style>
+	    #areaInfo {display:block;margin-top:2px;font-weight: normal;font-size:13px;position: relative;background:white;}
 	</style>
 
 </head>
@@ -18,6 +19,7 @@
 	<input type="text" id="textInput">
 	<button onclick="getText()"> 확인 </button>
 
+	<div id="areaInfo" style="width:400PX;height:65PX;"> </div>
     
 	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
 	<!-- 지도를 표시할 div 입니다 -->
@@ -80,7 +82,7 @@
 
 		// 조건에 따라 파라미터 이름을 설정하는 함수
 		function getDataParameter(condition) {
-			console.log(condition);
+//			console.log(condition);
 			
 		    if (condition.type === 'geomFilter') {
 				var filterVal = "point(" + condition.lng + " " + condition.lat + ")";
@@ -137,6 +139,8 @@
 				polygon.setMap(map);
 			
 				map.setBounds(bounds);
+				
+				displayAreaInfo(areaProperties);
 			}
 		}
 						
@@ -154,7 +158,22 @@
 			}
 		}
 
+		// 지도 좌측상단에 지도 중심좌표에 대한 주소정보를 표출하는 함수입니다
+		function displayAreaInfo(properties) {
 
+	        var infoDiv = document.getElementById('areaInfo');
+				infoDiv.innerHTML = '';
+				
+			infoDiv.innerHTML += '읍면동 코드: ' + properties.emd_cd;
+			infoDiv.innerHTML += '<br>' + '전체 주소: ' + properties.full_nm;
+			infoDiv.innerHTML += '<br>' + '한글 이름: ' + properties.emd_kor_nm;
+			infoDiv.innerHTML += '<br>' + '영문 이름: ' + properties.emd_eng_nm;
+
+			infoDiv.innerHTML += '<br>' + '지도 중심 좌표: ' 
+									+ '<a target="_blank" href = "https://map.kakao.com/link/search/' + map.getCenter().getLat() + "," +map.getCenter().getLng() + '">'
+									+ map.getCenter().getLat() + "," +map.getCenter().getLng() + '</a>' ;
+
+		}
 		
 	</script>
 
