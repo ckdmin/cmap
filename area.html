@@ -65,7 +65,7 @@
 					crs: "EPSG:4326",    
 		        	geomFilter: filterVal 
 		        };
-		    } else if (condition === 'attrFilter') {
+		    } else if (condition.type === 'attrFilter') {
 				var filterVal = "emd_kor_nm:like:" + condition.text;
 		        return { 
 					service: "data",
