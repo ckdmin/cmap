@@ -32,34 +32,15 @@
 		// 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
 		var map = new kakao.maps.Map(mapContainer, mapOption); 
 
-		function APIcall(filterType, filterVal){
-		
-			var val;
-			
-			if (filterType == "geomFilter")	{
-					filter = "point(" + filterVal.lng + " " + filterVal.lat + ")";
-				}
-			else if (filterType == "attrFilter")	{
-					filter = "emd_kor_nm:like:" + filterVal.text;
-				}
-			else	{
+		function APIcall(filter){
 
-				}
+			var requestData = getDataParameter(filter);
 			
 			// JSONP 요청 보내기
 			$.ajax({
 				url: 		"https://api.vworld.kr/req/data",
 				dataType: 	"jsonp",
-				data: 	{
-					service: "data",
-					request: "GetFeature",
-					data: "LT_C_ADEMD_INFO",
-					key: "BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1",
-					domain: "https://ckdmin.github.io/",
-//					geomFilter: "point(126.73446927413438 37.715658077169245)",
-					crs: "EPSG:4326",
-					filterType: filter
-				},
+				data: requestData,
 				success: function(data) {
 					handleResponse(data);
 				},
@@ -68,6 +49,36 @@
 					console.error("Error: " + status + ", " + error);
 				}
 			});
+		}
+
+
+		// 조건에 따라 파라미터 이름을 설정하는 함수
+		function getDataParameter(condition) {
+		    if (condition.type === 'geomFilter') {
+				var filterVal = "point(" + condition.lng + " " + condition.lat + ")";
+		        return { 
+					service: "data",
+					request: "GetFeature",
+					data: "LT_C_ADEMD_INFO",
+					key: "BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1",
+					domain: "https://ckdmin.github.io/",
+					crs: "EPSG:4326",    
+		        	geomFilter: filterVal 
+		        };
+		    } else if (condition === 'attrFilter') {
+				var filterVal = "emd_kor_nm:like:" + condition.text;
+		        return { 
+					service: "data",
+					request: "GetFeature",
+					data: "LT_C_ADEMD_INFO",
+					key: "BF505D0B-37D6-3CDE-B4D0-F154ABAB20E1",
+					domain: "https://ckdmin.github.io/",
+					crs: "EPSG:4326",    
+		        	attrFilter: filterVal
+		        };
+		    } else {
+		        return {};
+		    }
 		}
 
 		// JSONP 응답을 처리하는 콜백 함수 정의
@@ -106,13 +117,14 @@
 		function getText() {
 			// 입력된 텍스트 가져오기
 			var text = document.getElementById("textInput").value;
-			var filterVal = {};
+			var filter = {};
 			
 			console.log(text);
-			filterVal.lat = "37.715658077169245";
-			filterVal.lng = "126.73446927413438"; 
+			filter.type = "geomFilter";
+			filter.lat = "37.715658077169245";
+			filter.lng = "126.73446927413438"; 
 			
-			APIcall("geomFilter", filterVal);
+			APIcall(filter);
 			
 		}
 
