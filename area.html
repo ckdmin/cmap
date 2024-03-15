@@ -127,15 +127,12 @@
 			var filter = {};
 			
 			console.log(text);
-			filter.type = "attrFilter";
-			filter.text = text;
-
-//			filter.type = "geomFilter";
-//			filter.lat = "37.715658077169245";
-//			filter.lng = "126.73446927413438"; 
-			
-			APIcall(filter);
-			
+			if (text <> ""){
+				filter.type = "attrFilter";
+				filter.text = text;			
+						
+				APIcall(filter);				
+			}
 		}
 
 
