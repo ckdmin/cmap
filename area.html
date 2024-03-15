@@ -90,9 +90,13 @@
 		
 			//		console.log(areadata.length, areadata[0]);
 			var polygonPath=[];
+			
+			// 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
+			var bounds = new kakao.maps.LatLngBounds();    
 		
 			for (var i = 0, len = areadata.length; i < len; i++) {
 				polygonPath[i] = new kakao.maps.LatLng(areadata[i][1], areadata[i][0]);
+				bounds.extend(polygonPath[i]);
 			}
 			
 			console.log(polygonPath);
@@ -110,7 +114,8 @@
 
 			// 지도에 다각형을 표시합니다
 			polygon.setMap(map);
-			map.setBounds(polygonPath);
+			
+			map.setBounds(bounds);
 
 		}
 						
