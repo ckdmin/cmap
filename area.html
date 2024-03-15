@@ -19,11 +19,13 @@
 	<input type="text" id="textInput">
 	<button onclick="getText()"> 확인 </button>
 
-	<div id="areaInfo" style="width:400PX;height:65PX;"> </div>
+
     
 	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
 	<!-- 지도를 표시할 div 입니다 -->
-	<div id="map" style="width:100%;height:100%;"></div>
+	<div id="map" style="width:100%;height:100%;z-index:1;">
+			<div id="areaInfo" style="width:400PX;height:70PX;z-index:2;"> </div>
+	</div>
 	<script>
 		var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 		    mapOption = { 
