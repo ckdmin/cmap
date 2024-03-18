@@ -4750,7 +4750,7 @@ async function sendBatch(data) {
         headers: {
           'Content-Type': 'application/json' // 요청 헤더에 JSON 형식으로 데이터를 전달한다고 명시
         },
-        body: '{"rsrcNoList" : [' + JSON.stringify(batch) + ']}' // 데이터를 JSON 문자열로 변환하여 요청 본문에 넣음
+        body: '{"rsrcNoList" : [' + batch + ']}' // 데이터를 JSON 문자열로 변환하여 요청 본문에 넣음
       });
 
       if (!response.ok) {
