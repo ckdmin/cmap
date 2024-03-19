@@ -4731,20 +4731,21 @@ const allData = [
 // API 엔드포인트
 const apiUrl = 'https://www.eshare.go.kr/eshare-openapi/rsrc/detail/d41d8cd98f003204a9800998ecf8427e';
 
+
 // 한 번에 보낼 데이터 개수
 const batchSize = 100;
 
 // 데이터를 일정 개수씩 끊어서 호출하는 함수
-async function sendBatch(data) {
+async function sendBatchesAndDownload(data) {
   try {
-    // 데이터를 일정 개수씩 나누기
-    const batches = [];
-    for (let i = 0; i < data.length; i += batchSize) {
-      batches.push(data.slice(i, i + batchSize));
-    }
+    // 전체 데이터를 batchSize씩 나누어 호출하고 합칠 변수 초기화
+    let mergedData = [];
 
-    // 각 배치별로 요청 보내고 다운로드
-    for (const batch of batches) {
+    // 데이터를 일정 개수씩 나누어 호출하고 합치기
+    for (let i = 0; i < data.length; i += batchSize) {
+      const batch = data.slice(i, i + batchSize);
+
+      // 각 배치별로 요청 보내기
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -4757,31 +4758,42 @@ async function sendBatch(data) {
         throw new Error('Network response was not ok');
       }
 
-      // 응답 데이터를 Blob으로 변환
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      // 다운로드 링크 생성
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'data_batch_' + batches.indexOf(batch) + '.txt'; // 다운로드할 파일명 지정
-
-      // 다운로드 링크 클릭 및 자원 해제
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
+      // 응답 데이터를 배열에 추가
+      const responseData = await response.json();
+      mergedData = mergedData.concat(responseData.data);
     }
 
-    console.log('All batches sent and downloaded successfully.');
+    // 합쳐진 데이터를 파일로 저장
+    downloadMergedData(mergedData);
   } catch (error) {
-    console.error('Error sending batches:', error);
+    console.error('Error sending batches and downloading:', error);
   }
 }
 
-// 데이터 전송 및 다운로드 시작
-sendBatch(allData);
-  
+// 합쳐진 데이터를 파일로 다운로드하는 함수
+function downloadMergedData(data) {
+  // 데이터를 텍스트로 변환
+  const textData = JSON.stringify(data);
 
+  // 텍스트 데이터를 Blob으로 변환
+  const blob = new Blob([textData], { type: 'application/json' });
+  const url = window.URL.createObjectURL(blob);
+
+  // 다운로드 링크 생성
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'merged_data.txt'; // 다운로드할 파일명 지정
+
+  // 다운로드 링크 클릭 및 자원 해제
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+
+  console.log('Merged data downloaded successfully.');
+}
+
+// 데이터 전송 및 다운로드 시작
+sendBatchesAndDownload(allData);
 
 
   </script>
