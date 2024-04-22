@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFrame Keyword Checker</title>
+    <script>
+        function checkKeyword() {
+            // iFrame의 document 객체 가져오기
+            var iframe = document.getElementById('myIframe');
+            var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            
+            // 특정 키워드 체크
+            var keyword = 'snoopy';
+            
+            // iFrame 내용에서 키워드 확인
+            if (iframeDoc.body.innerText.includes(keyword)) {
+                alert('키워드가 발견되었습니다!');
+            } else {
+                alert('키워드가 발견되지 않았습니다.');
+            }
+        }
+
+        // 주기적으로 iFrame 새로고침
+        setInterval(function() {
+            var iframe = document.getElementById('myIframe');
+            iframe.src = iframe.src; // iFrame 새로고침
+            checkKeyword(); // 키워드 확인
+        }, 5000); // 5초마다 새로고침
+    </script>
+</head>
+<body>
+    <iframe id="myIframe" src="https://meetingroom.onkakao.net/main/alphadom-1-10?day=2024-05-02" width="800" height="600"></iframe>
+
+    <!-- 키워드 확인 버튼 (선택사항) -->
+    <button onclick="checkKeyword()">키워드 확인</button>
+</body>
+</html>
