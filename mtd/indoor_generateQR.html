@@ -9,15 +9,33 @@
 
         // 서버로 POST 요청을 보내는 함수
         function sendPostRequest() {
-            fetch('https://example.com/api', {
+            fetch('https://qrcode.kakao.com/v1/qr', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Basic a2FrYW9tYXAtbXRkOg==' 
                 },
                 body: JSON.stringify({
-                    message: 'Hello from client!',
-                    timestamp: new Date().toISOString()
-                }),
+				   "qrCodeName":"chang_test_1",
+				   "qrCodeParam": {
+			            "content":"https://map.kakao.com",
+			            "size":1000,
+			            "recoveryLevel":"Q",
+			            "cellShape":"circle",
+			            "cellColor":{
+			                "color":"#FFFFFF",
+			                "opacity":0.7
+			            },
+			            "emptyCellColor":{
+			                "color":"#000000",
+			                "opacity":0.3
+			            },
+			            "backgroundColor":{
+			                "color":"#777000",
+			                "opacity":0.5
+			            }
+			        }
+				}),
             })
             .then(response => response.json())
             .then(data => console.log('Success:', data))
