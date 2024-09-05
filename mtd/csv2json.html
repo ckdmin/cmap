@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to JSON Converter</title>
+</head>
+<body>
+    <h1>CSV to JSON Converter</h1>
+    
+    <input type="file" id="csvFileInput" accept=".csv" />
+    <button onclick="convertCsvToJson()">Convert to JSON</button>
+    <a id="downloadLink" style="display: none;">Download JSON</a>
+
+    <script>
+        function convertCsvToJson() {
+            const input = document.getElementById('csvFileInput');
+            const file = input.files[0];
+            
+            if (!file) {
+                alert("Please select a CSV file first.");
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const csvData = event.target.result;
+                const jsonData = csvToJson(csvData);
+                downloadJson(jsonData, file.name.replace('.csv', '.json'));
+            };
+
+            reader.readAsText(file);
+        }
+
+        function csvToJson(csv) {
+            const lines = csv.split("\n");
+            const headers = lines[0].split(",");
+            const json = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const obj = {};
+                const currentLine = lines[i].split(",");
+
+                headers.forEach((header, index) => {
+                    obj[header.trim()] = currentLine[index] ? currentLine[index].trim() : null;
+                });
+
+                if (Object.keys(obj).length > 0) {
+                    json.push(obj);
+                }
+            }
+
+            return JSON.stringify(json, null, 2);
+        }
+
+        function downloadJson(jsonData, filename) {
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const link = document.getElementById('downloadLink');
+            
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.style.display = 'block';
+            link.innerText = 'Download ' + filename;
+        }
+    </script>
+</body>
+</html>
