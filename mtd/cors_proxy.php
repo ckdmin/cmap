@@ -1,8 +1,8 @@
 <?php
 // CORS 헤더 설정
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+// header("Access-Control-Allow-Origin: *");
+// header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+// header("Access-Control-Allow-Headers: Content-Type");
 
 // 클라이언트로부터 받은 POST 데이터를 읽음
 $data = file_get_contents('php://input');
