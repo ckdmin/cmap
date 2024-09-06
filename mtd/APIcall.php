@@ -22,6 +22,5 @@ if(curl_errno($ch)) {
     echo $response; // REST API의 응답을 클라이언트에게 반환
 }
 
-
 curl_close($ch);
 ?>
