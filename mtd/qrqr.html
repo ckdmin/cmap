@@ -1,0 +1,33 @@
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script> 
+</head>
+
+
+<body>
+
+	<script>
+
+			$.ajax({
+	    		url: "./APIcall.php",
+	    		type: "POST",
+		  		dataType: "JSON",
+	    		success: function(result)
+	    		{
+	    			console.log("success: ", result);
+	    		},
+	    		error: function(result)
+	    		{
+	    			console.log("fail: ", result);
+	    		}
+			});
+		
+
+	</script>
+
+</body>
+
+
+</html>
