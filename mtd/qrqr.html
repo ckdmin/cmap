@@ -1,45 +1,33 @@
-<!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-    <meta charset="UTF-8">
+	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJAX 호출 예제</title>
-    <script>
-        function sendAjaxRequest() {
-            var xhr = new XMLHttpRequest();
-            var url = './APIcall.php'; // PHP 파일 경로
-
-            // POST 요청 설정
-            xhr.open('POST', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-//            xhr.setRequestHeader('Authorization', 'Bearer your-auth-token-here'); // 필요 시 인증 토큰 추가
-
-            // 요청이 완료되었을 때의 콜백 함수
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    // 성공적으로 응답을 받은 경우
-                    console.log('Response:', xhr.responseText);
-                } else {
-                    // 오류 응답
-                    console.error('Request failed with status:', xhr.status);
-                }
-            };
-
-            // 요청 오류 처리
-            xhr.onerror = function() {
-                console.error('Request failed');
-            };
-
-            // 요청 본문 데이터
-            var data = JSON.stringify({ key1: 'value1', key2: 'value2' });
-
-            // 서버로 데이터 전송
-            xhr.send(data);
-        }
-    </script>
+	<script src="https://code.jquery.com/jquery-1.10.2.js"></script> 
 </head>
+
+
 <body>
-    <h1>AJAX 호출 예제</h1>
-    <button onclick="sendAjaxRequest()">AJAX 요청 보내기</button>
+
+	<script>
+
+			$.ajax({
+	    		url: "./APIcall.php",
+	    		type: "POST",
+		  		dataType: "JSON",
+	    		success: function(result)
+	    		{
+	    			console.log("success: ", result);
+	    		},
+	    		error: function(result)
+	    		{
+	    			console.log("fail: ", result);
+	    		}
+			});
+		
+
+	</script>
+
 </body>
+
+
 </html>
