@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Image with New Name</title>
+</head>
+<body>
+    <button id="downloadBtn">Download Image</button>
+
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const imageUrl = 'http://t1.kakaocdn.net/qr_code/kakaomap-mtd/YmEwanVtNW9jdmo4OVIzNG5sbVhqS0FrR1FOMTU0QXdCSFVtMmw3bUV1T0sxSVpMM3VTMmd6NUh4RlpSVHBNQTVQaVBZUTF5UjNTeHdtbW1CMDZWVEplQzRlb3RtS01MS1N1ZQ==.png';
+            const newFileName = '000011110000.png';
+
+            fetch(imageUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = newFileName; // Set the new file name here
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url); // Clean up
+                })
+                .catch(error => console.error('Error downloading the file:', error));
+        });
+    </script>
+
+</body>
+</html>
