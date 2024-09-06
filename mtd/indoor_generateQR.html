@@ -3,26 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON 파일 읽기 및 POST 요청 (CORS 회피)</title>
+    <title>JSON 파일 읽기 및 POST 요청 (순차 전송)</title>
     <script>
         let intervalId;
 
-        // 서버로 POST 요청을 보내는 함수 (PHP 파일로 요청 전송)
+        // 서버로 POST 요청을 보내는 함수
         function sendPostRequest(data) {
-            fetch('./cors_proxy.php', { // PHP 파일 경로
+            return fetch('./cors_proxy.php', { // PHP 파일 경로
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data), // JSON 파일에서 읽은 데이터
+                body: JSON.stringify(data),
             })
             .then(response => response.json())
-            .then(result => console.log('Success:', result))
-            .catch(error => console.error('Error:', error));
+            .then(result => {
+                console.log('Success:', result);
+                return result;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                throw error;
+            });
         }
 
-        // JSON 파일을 읽는 함수
-        function readFileAndSendPost() {
+        // JSON 파일을 읽고 레코드를 하나씩 POST 요청으로 전송하는 함수
+        function readFileAndSendPosts() {
             const fileInput = document.getElementById('jsonFile');
             const file = fileInput.files[0];
             
@@ -33,12 +39,22 @@
                         const jsonData = JSON.parse(event.target.result);
                         console.log('파일 내용:', jsonData);
 
-                        const interval = document.getElementById('interval').value;
-                        if (intervalId) {
-                            clearInterval(intervalId); // 이전 반복을 정지
+                        const interval = document.getElementById('interval').value * 1000; // 밀리초로 변환
+                        let index = 0;
+
+                        function sendNextRecord() {
+                            if (index < jsonData.length) {
+                                sendPostRequest(jsonData[index])
+                                    .then(() => {
+                                        index++;
+                                        setTimeout(sendNextRecord, interval);
+                                    });
+                            } else {
+                                console.log('모든 레코드 전송 완료');
+                            }
                         }
-                        intervalId = setInterval(() => sendPostRequest(jsonData), interval * 1000);
-                        console.log(`POST 요청이 ${interval}초마다 반복됩니다.`);
+
+                        sendNextRecord(); // 첫 번째 레코드 전송 시작
                     } catch (error) {
                         console.error('JSON 파싱 오류:', error);
                     }
@@ -49,7 +65,7 @@
             }
         }
 
-        // 반복 호출을 정지하는 함수
+        // 요청 전송을 중지하는 함수
         function stopRepeatedPost() {
             if (intervalId) {
                 clearInterval(intervalId);
@@ -59,14 +75,14 @@
     </script>
 </head>
 <body>
-    <h1>JSON 파일 읽기 및 POST 요청 (CORS 회피)</h1>
+    <h1>JSON 파일 읽기 및 POST 요청 (순차 전송)</h1>
     <label for="jsonFile">JSON 파일 선택: </label>
     <input type="file" id="jsonFile" accept=".json">
     <br><br>
-    <label for="interval">반복 간격(초): </label>
+    <label for="interval">전송 간격(초): </label>
     <input type="number" id="interval" value="5" min="1">
     <br><br>
-    <button onclick="readFileAndSendPost()">반복 시작</button>
-    <button onclick="stopRepeatedPost()">반복 중지</button>
+    <button onclick="readFileAndSendPosts()">전송 시작</button>
+    <button onclick="stopRepeatedPost()">전송 중지</button>
 </body>
 </html>
