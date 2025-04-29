@@ -1,0 +1,392 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script> 
+	<link rel="stylesheet" href="./files/CSS/styles.css">
+
+		
+	<title> Chang Map_Area </title>
+	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0caed26006cd55ea65ee44c2d994f012&libraries=clusterer,services"></script>
+</head>
+
+<body>
+	<!-- 지도 -->
+	<div id="map"></div>
+
+	<!-- 지역 선택 UI -->
+	<div id="regionContainer">
+		<h4>지역 선택</h4>
+		<button onclick="selectAll(true)">전체 선택</button>
+		<button onclick="selectAll(false)">RESET</button>
+		<div id="regionList">
+	        <!-- 체크박스 추가됨 -->
+    	</div>
+	</div>
+
+	<script>
+
+	let map;
+	let polygons = {}; // h_code별 다각형 저장 (배열)
+
+	async function loadRegions() {
+    	try {
+        	const response = await fetch('./files/region_area_new.json'); // JSON 파일 불러오기
+        	const regions = await response.json(); // JSON 데이터 변환
+	        const container = document.getElementById('regionList');
+
+    	    regions.forEach(region => {
+	            const regionWrapper = document.createElement('div');
+	            regionWrapper.classList.add('region-wrapper');
+regionWrapper.dataset.name = region.region_name || ""; // 값이 없을 경우 빈 문자열
+
+	            const regionItem = document.createElement('div');
+	            const checkbox = document.createElement('input');
+				const regionLabel = document.createElement('span');
+				const toggleButton = document.createElement('button');
+	            const subRegionContainer = document.createElement('div');
+    	        const controlButtons = document.createElement('div');
+        	    const selectAllButton = document.createElement('button');
+	            const clearButton = document.createElement('button');
+            
+	            checkbox.type = 'checkbox';
+	            checkbox.value = region.h_code;
+	            checkbox.name = 'regions';
+	            checkbox.classList.add('parent-region');
+	            checkbox.addEventListener('change', (event) => {
+	                event.stopPropagation(); // 부모 요소로 이벤트 전파 방지
+	                toggleRegion(checkbox);
+	            });
+
+				regionLabel.textContent = region.region_name;
+				regionLabel.classList.add('region-label');
+				regionLabel.style.textDecoration = 'underline';
+				regionLabel.style.cursor = 'pointer';
+regionLabel.addEventListener('click', () => {
+    checkbox.checked = !checkbox.checked;
+    toggleRegion(checkbox);
+});
+
+		        toggleButton.textContent = '▼';
+	            toggleButton.classList.add('toggle-button');
+	            toggleButton.style.cursor = 'pointer';
+	            toggleButton.style.fontSize = '12px'; // 버튼 크기 조정
+	            toggleButton.style.marginLeft = '3px';
+	            toggleButton.addEventListener('click', (event) => {
+	                event.stopPropagation(); // 체크박스와 분리된 동작 유지
+	                const isVisible = subRegionContainer.style.display === 'block';
+	                subRegionContainer.style.display = isVisible ? 'none' : 'block';
+	                toggleButton.textContent = isVisible ? '▼' : '▲';
+	            });
+
+				regionItem.classList.add('region-item');
+				// 순서 조정: 체크박스 → 부모 지역명 → 펼치기 버튼
+				regionItem.appendChild(checkbox);
+				regionItem.appendChild(regionLabel);
+				regionItem.appendChild(toggleButton);
+            
+	            subRegionContainer.classList.add('sub-region-container');
+	            subRegionContainer.style.display = 'none'; // 기본적으로 숨김 처리
+	            subRegionContainer.style.paddingLeft = '20px'; // 들여쓰기 적용
+            
+	            controlButtons.classList.add('control-buttons');
+	            selectAllButton.textContent = 'Select All';
+	            selectAllButton.classList.add('select-all-button');
+	            selectAllButton.addEventListener('click', () => {
+	                toggleSubRegions(subRegionContainer, true);
+	            });
+            
+	            clearButton.textContent = '지역 전체 해제';
+	            clearButton.classList.add('clear-button');
+//	            clearButton.style.display = 'none';
+	            clearButton.addEventListener('click', () => {
+	                toggleSubRegions(subRegionContainer, false);
+	            });
+
+	            controlButtons.appendChild(selectAllButton);
+	            controlButtons.appendChild(clearButton);
+
+	            regionWrapper.appendChild(regionItem);
+	            regionWrapper.appendChild(subRegionContainer);
+	            container.appendChild(regionWrapper);
+
+	            if (region.sub_regions && Array.isArray(region.sub_regions)) {
+					subRegionContainer.appendChild(controlButtons); // 버튼을 먼저 추가
+
+		            region.sub_regions.forEach(subRegion => {
+	                    const subRegionItem = document.createElement('div');
+	                    const subCheckbox = document.createElement('input');
+	                    const subLabel = document.createElement('span');
+
+subRegionItem.dataset.name = subRegion.region_name || ""; // 하위 지역에도 데이터셋 추가
+
+
+	                    subCheckbox.type = 'checkbox';
+	                    subCheckbox.value = subRegion.h_code;
+	                    subCheckbox.name = 'regions';
+	                    subCheckbox.classList.add('sub-region');
+	                    subCheckbox.addEventListener('change', (event) => {
+	                        event.stopPropagation(); // 부모 요소로 이벤트 전파 방지
+	                        toggleRegion(subCheckbox);
+	                    });
+                    
+    	                subLabel.textContent = subRegion.region_name;
+        	            subLabel.classList.add('sub-region-label');
+                    subLabel.style.cursor = 'pointer';
+subLabel.addEventListener('click', () => {
+    subCheckbox.checked = !subCheckbox.checked;
+    toggleRegion(subCheckbox);
+});
+	                    subRegionItem.appendChild(subCheckbox);
+    	                subRegionItem.appendChild(subLabel);
+        	            subRegionItem.classList.add('sub-region-item');
+            	        subRegionItem.style.paddingLeft = '20px'; // 들여쓰기 적용
+                    
+	                    subRegionContainer.appendChild(subRegionItem);
+    	            });
+	            }
+	        });
+	    } catch (error) {
+	        console.error('지역 데이터를 불러오는 중 오류 발생:', error);
+	    } // try
+	} // function loadRegions()
+
+function toggleRegion(checkbox) {
+    const hcode = checkbox.value;
+    if (checkbox.checked) {
+        if (!polygons[hcode]) {
+            fetchRegionData(hcode);
+        }
+    } else {
+        removePolygon(hcode);
+    }
+}
+
+function toggleSubRegions(container, select) {
+    const subCheckboxes = container.querySelectorAll('input.sub-region');
+    subCheckboxes.forEach(checkbox => {
+        checkbox.checked = select;
+        toggleRegion(checkbox);
+    });
+    const clearButton = container.querySelector('.clear-button');
+    const selectAllButton = container.querySelector('.select-all-button');
+/*    if (select) {
+        clearButton.style.display = 'block';
+        selectAllButton.style.display = 'none';
+    } else {
+        clearButton.style.display = 'none';
+        selectAllButton.style.display = 'block';
+    }*/
+}
+
+function selectAll(select) {
+    const parentCheckboxes = document.querySelectorAll('input.parent-region');
+    parentCheckboxes.forEach(checkbox => {
+        const wasChecked = checkbox.checked;
+        checkbox.checked = select;
+
+        if (select && !wasChecked) {
+            fetchRegionData(checkbox.value); // 새로 선택된 경우만 요청
+        } else if (!select) {
+            removePolygon(checkbox.value);
+
+        }
+    });
+    
+    if (!select) {
+        const subCheckboxes = document.querySelectorAll('input.sub-region');
+        subCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            toggleRegion(checkbox);
+        });
+        
+        const subRegionContainers = document.querySelectorAll('.sub-region-container');
+        subRegionContainers.forEach(container => {
+            container.style.display = 'none'; // 전체 해제 시 모든 하위 지역 닫기
+        });
+        
+            const toggleButtons = document.querySelectorAll('.toggle-button');
+    toggleButtons.forEach(button => {
+        button.textContent = '▼'; // 전체 해제 시 모든 토글 버튼 초기화
+    });
+    
+            map.setCenter(new kakao.maps.LatLng(37.39541713271851, 127.11036420512991));
+            map.setLevel(13);
+    }
+}
+
+function filterRegions() {
+    const query = document.getElementById('regionSearch').value.toLowerCase();
+    const isEmpty = query.trim() === ''; // 검색어가 비어있는지 확인
+
+    document.querySelectorAll('.region-wrapper').forEach(wrapper => {
+        const regionName = wrapper.dataset.name.toLowerCase();
+        let match = regionName.includes(query);
+
+        const subRegionContainer = wrapper.querySelector('.sub-region-container');
+        const toggleButton = wrapper.querySelector('.toggle-button');
+        let hasVisibleSubRegion = false;
+
+        const subRegions = wrapper.querySelectorAll('.sub-region-item');
+        subRegions.forEach(subRegion => {
+            const subName = subRegion.dataset.name.toLowerCase();
+            const subMatch = subName.includes(query);
+            subRegion.style.display = subMatch ? 'block' : 'none';
+            if (subMatch) hasVisibleSubRegion = true;
+        });
+
+        if (match || hasVisibleSubRegion) {
+            wrapper.style.display = 'block';
+            if (hasVisibleSubRegion) {
+                subRegionContainer.style.display = 'block';
+                toggleButton.textContent = '▲';
+            }
+        } else {
+            wrapper.style.display = 'none';
+        }
+
+        // 🔹 검색어가 비었을 때 하위 지역 닫기
+        if (isEmpty) {
+            subRegionContainer.style.display = 'none';
+            toggleButton.textContent = '▼';
+        }
+    });
+}
+
+function fetchRegionData(hcode) {
+	console.log("fetchRegionData")
+
+    const apiUrl = `./proxy.php?hcode=${hcode}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.length > 0) {
+                removePolygon(hcode);
+                polygons[hcode] = [];
+
+                data.forEach(region => {
+                    if (region.exterior && Array.isArray(region.exterior)) {
+                        const polygonPath = region.exterior.map(coord => 
+                            new kakao.maps.LatLng(coord.y, coord.x)
+                        );
+                        drawPolygon(hcode, polygonPath);
+                    }
+                });
+            }
+        })
+        .catch(error => console.error(`API 호출 오류 (h_code: ${hcode}):`, error));
+}
+
+function drawPolygon(hcode, polygonPath) {
+	console.log("drawPolygon")
+
+    const polygon = new kakao.maps.Polygon({
+        path: polygonPath,
+        strokeWeight: 2,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.5,
+        fillColor: '#FF0000',
+        fillOpacity: 0.1
+    });
+
+    polygon.setMap(map);
+    polygons[hcode].push(polygon);
+    adjustMapBounds();
+}
+
+function adjustMapBounds() {
+	console.log("adjustMapBounds")
+    const bounds = new kakao.maps.LatLngBounds();
+    Object.values(polygons).forEach(polygonArray => {
+        polygonArray.forEach(polygon => {
+            polygon.getPath().forEach(coord => bounds.extend(coord));
+        });
+    });
+    if (!bounds.isEmpty()) {
+        map.setBounds(bounds);
+    }
+}
+
+function removePolygon(hcode) {
+	console.log("removePolygon")
+
+    if (polygons[hcode]) {
+        polygons[hcode].forEach(polygon => polygon.setMap(null));
+        delete polygons[hcode];
+    }
+//    adjustMapBounds();
+}
+
+function initMap() {
+    map = new kakao.maps.Map(document.getElementById('map'), {
+        center: new kakao.maps.LatLng(37.39541713271851, 127.11036420512991),
+        level: 13
+    });
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const searchContainer = document.createElement('div');
+    searchContainer.style.position = 'relative';
+    searchContainer.style.display = 'inline-block';
+    
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.id = 'regionSearch';
+    searchInput.placeholder = '지역 검색';
+    searchInput.addEventListener('input', filterRegions);
+    
+    const clearButton = document.createElement('button');
+    clearButton.textContent = 'x';
+    clearButton.style.position = 'absolute';
+    clearButton.style.right = '5px';
+    clearButton.style.top = '50%';
+    clearButton.style.transform = 'translateY(-50%)';
+    clearButton.style.border = 'none';
+    clearButton.style.background = 'transparent';
+    clearButton.style.cursor = 'pointer';
+    clearButton.style.display = 'none'; // 처음에는 숨김
+
+    clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        filterRegions(); // 검색어 지우면 리스트 초기화
+        clearButton.style.display = 'none';
+    });    
+
+    searchInput.addEventListener('input', () => {
+        clearButton.style.display = searchInput.value ? 'block' : 'none';
+    });
+
+    searchContainer.appendChild(searchInput);
+    searchContainer.appendChild(clearButton);
+    document.getElementById('regionContainer').insertBefore(searchContainer, document.getElementById('regionList'));
+
+
+    initMap();
+    loadRegions();
+
+    // ✅ 지역 선택 컨테이너 토글 버튼 추가
+    const regionContainer = document.getElementById('regionContainer');
+    const toggleRegionContainerBtn = document.createElement('button');
+    toggleRegionContainerBtn.textContent = '접기 ▲';
+    toggleRegionContainerBtn.classList.add('toggle-region-container-btn');
+    
+    toggleRegionContainerBtn.addEventListener('click', () => {
+        const isVisible = regionContainer.style.display !== 'none';
+        regionContainer.style.display = isVisible ? 'none' : 'block';
+        toggleRegionContainerBtn.textContent = isVisible ? '펼치기 ▼' : '접기 ▲';
+    });
+
+    // 컨테이너 앞에 버튼 추가
+    regionContainer.parentElement.insertBefore(toggleRegionContainerBtn, regionContainer);
+});
+
+
+</script>
+</body>
+
+
+</html>
