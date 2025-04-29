@@ -258,7 +258,7 @@ function fetchRegionData(hcode) {
 	console.log("fetchRegionData")
 
 //    const apiUrl = `./proxy.php?hcode=${hcode}`;
-	const apiUrl = `cml.dothome.co.kr/proxy.php?hcode=${hcode}`;
+	const apiUrl = `https://cml.dothome.co.kr/proxy.php?hcode=${hcode}`;
 
     fetch(apiUrl)
         .then(response => response.json())
