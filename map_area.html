@@ -32,7 +32,7 @@
 
 	async function loadRegions() {
     	try {
-        	const response = await fetch('./files/region_area_new.json'); // JSON 파일 불러오기
+        	const response = await fetch('./data/region_info_kr.json'); // JSON 파일 불러오기
         	const regions = await response.json(); // JSON 데이터 변환
 	        const container = document.getElementById('regionList');
 
